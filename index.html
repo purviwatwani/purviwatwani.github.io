@@ -1,56 +1,715 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Purvi's Website</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Purviews</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #fdfbfb, #ebedee);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
+  :root {
+    --bg: #edeae2;
+    --window: #f5f2eb;
+    --card: #faf8f3;
+    --card-border: #ddd9ce;
+    --card-shadow: rgba(0,0,0,0.06);
+    --fg: #2c2a26;
+    --muted: #7a7670;
+    --subtle: #b0ac9f;
+    --accent: #8a7a5a;
+    --titlebar: #e8e4db;
+    --dot-r: #ff5f57;
+    --dot-y: #febc2e;
+    --dot-g: #28c840;
+    --social-border: #ccc8bc;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+    --overlay-bg: rgba(30, 28, 24, 0.5);
+  }
 
-    .card {
-      background: white;
-      padding: 40px;
-      border-radius: 16px;
-      max-width: 420px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
+  .dark {
+    --bg: #1a1917;
+    --window: #242220;
+    --card: #2c2a26;
+    --card-border: #3a3832;
+    --card-shadow: rgba(0,0,0,0.35);
+    --fg: #e4e0d5;
+    --muted: #7a7670;
+    --subtle: #4a4840;
+    --accent: #c4a87a;
+    --titlebar: #1e1c1a;
+    --social-border: #3a3832;
+    --overlay-bg: rgba(0,0,0,0.65);
+  }
 
-    h1 {
-      margin-top: 0;
-      font-size: 32px;
-    }
+  html, body {
+    min-height: 100vh;
+    background: var(--bg);
+    font-family: var(--sans);
+    transition: background 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
 
-    p {
-      font-size: 18px;
-      color: #555;
-      line-height: 1.6;
-    }
+  /* ── grain overlay ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.6;
+  }
 
-    .emoji {
-      font-size: 40px;
-      margin-bottom: 10px;
-    }
-  </style>
+  /* ── browser window ── */
+  .browser {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 680px;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 0 rgba(255,255,255,0.15) inset,
+                0 12px 50px rgba(0,0,0,0.2),
+                0 2px 8px rgba(0,0,0,0.1);
+    background: var(--window);
+    transition: background 0.4s ease;
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── titlebar ── */
+  .titlebar {
+    background: var(--titlebar);
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--card-border);
+    transition: background 0.4s, border-color 0.4s;
+  }
+  .dots { display: flex; gap: 6px; }
+  .dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    transition: opacity 0.2s;
+  }
+  .dot:hover { opacity: 0.75; }
+  .dot.r { background: var(--dot-r); }
+  .dot.y { background: var(--dot-y); }
+  .dot.g { background: var(--dot-g); }
+
+  .urlbar {
+    flex: 1;
+    background: var(--card);
+    border: 0.5px solid var(--card-border);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 11px; color: var(--muted);
+    font-family: var(--sans); letter-spacing: 0.03em;
+    text-align: center;
+    transition: background 0.4s, border-color 0.4s, color 0.4s;
+  }
+
+  .mode-btn {
+    font-size: 11px; padding: 4px 11px;
+    border: 0.5px solid var(--card-border);
+    border-radius: 6px;
+    background: transparent; color: var(--muted);
+    cursor: pointer; font-family: var(--sans);
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .mode-btn:hover { color: var(--fg); border-color: var(--muted); }
+
+  /* ── window body ── */
+  .win-body { padding: 30px 32px 22px; }
+
+  .site-name {
+    font-family: var(--serif);
+    font-size: 42px; font-weight: 300;
+    text-align: center; color: var(--fg);
+    letter-spacing: 0.05em; margin-bottom: 7px;
+    transition: color 0.4s;
+  }
+  .site-tagline {
+    text-align: center; font-size: 12px;
+    color: var(--muted); letter-spacing: 0.07em;
+    margin-bottom: 30px; font-weight: 300;
+  }
+
+  /* ── icon grid ── */
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 26px;
+  }
+
+  .icon-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 22px 10px 17px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 13px;
+    cursor: pointer;
+    transition: transform 0.18s ease,
+                box-shadow 0.18s ease,
+                background 0.4s,
+                border-color 0.4s;
+    box-shadow: 0 2px 8px var(--card-shadow);
+    user-select: none;
+  }
+  .icon-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px var(--card-shadow);
+    border-color: var(--accent);
+  }
+  .icon-card:active { transform: translateY(-1px); }
+
+  .icon-wrap {
+    width: 64px; height: 64px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; position: relative; line-height: 1;
+  }
+
+  .badge {
+    position: absolute; top: -4px; right: -4px;
+    width: 17px; height: 17px; border-radius: 50%;
+    background: #d95b3a;
+    border: 2px solid var(--card);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: #fff; font-weight: 600;
+    font-family: var(--sans);
+    transition: border-color 0.4s;
+  }
+
+  .card-label {
+    font-size: 11.5px; color: var(--fg);
+    text-align: center; line-height: 1.45;
+    letter-spacing: 0.01em; font-weight: 300;
+    transition: color 0.4s;
+  }
+
+  /* ── social bar ── */
+  .social-bar {
+    border-top: 1px solid var(--social-border);
+    padding: 15px 0 5px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 30px;
+    transition: border-color 0.4s;
+  }
+  .social-link {
+    display: flex; align-items: center; gap: 6px;
+    text-decoration: none; color: var(--muted);
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    font-weight: 400; transition: color 0.2s;
+  }
+  .social-link:hover { color: var(--fg); }
+  .social-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── panel overlay ── */
+  .overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--overlay-bg);
+    align-items: center; justify-content: center;
+    padding: 24px;
+    backdrop-filter: blur(2px);
+    animation: overlayIn 0.2s ease;
+  }
+  .overlay.open { display: flex; }
+
+  @keyframes overlayIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .panel-box {
+    background: var(--window);
+    border-radius: 16px;
+    width: min(580px, 100%);
+    max-height: 82vh; overflow-y: auto;
+    padding: 36px;
+    position: relative;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.28);
+    animation: panelIn 0.25s ease;
+    transition: background 0.4s;
+    scrollbar-width: thin;
+    scrollbar-color: var(--card-border) transparent;
+  }
+
+  @keyframes panelIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .panel-close {
+    position: absolute; top: 18px; right: 18px;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--card-border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 13px; color: var(--muted);
+    transition: all 0.2s; line-height: 1;
+  }
+  .panel-close:hover { color: var(--fg); border-color: var(--muted); }
+
+  /* ── panel content typography ── */
+  .panel-title {
+    font-family: var(--serif);
+    font-size: 28px; font-weight: 300; color: var(--fg);
+    margin-bottom: 4px; transition: color 0.4s;
+  }
+  .panel-sub {
+    font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 22px;
+  }
+  .panel-intro {
+    font-family: var(--serif);
+    font-size: 15px; font-style: italic; font-weight: 300;
+    color: var(--muted); line-height: 1.85;
+    margin-bottom: 22px; max-width: 440px;
+  }
+  .section-label {
+    font-size: 9px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--subtle);
+    margin-bottom: 12px; margin-top: 20px;
+  }
+
+  /* notes */
+  .note-row {
+    padding: 13px 0;
+    border-bottom: 1px solid var(--card-border);
+    cursor: pointer;
+  }
+  .note-row:last-child { border-bottom: none; }
+  .note-row:hover .n-title { color: var(--accent); }
+  .n-week {
+    font-size: 9px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--subtle); margin-bottom: 4px;
+  }
+  .n-title {
+    font-family: var(--serif);
+    font-size: 16px; font-weight: 300; color: var(--fg);
+    transition: color 0.2s; line-height: 1.4;
+  }
+  .n-date { font-size: 10px; color: var(--subtle); margin-top: 3px; }
+
+  /* photos */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .photo-cell {
+    border: 1px solid var(--card-border);
+    border-radius: 10px; overflow: hidden;
+    background: var(--card);
+    display: flex; flex-direction: column;
+    cursor: pointer; transition: border-color 0.2s, transform 0.18s;
+  }
+  .photo-cell:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .photo-thumb {
+    height: 80px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; background: var(--bg);
+  }
+  .photo-info { padding: 10px 12px; }
+  .photo-name {
+    font-family: var(--serif);
+    font-size: 14px; color: var(--fg); margin-bottom: 2px;
+  }
+  .photo-meta { font-size: 10px; color: var(--muted); }
+
+  /* books */
+  .book-row {
+    display: flex; gap: 13px; margin-bottom: 16px;
+    align-items: flex-start;
+  }
+  .book-spine {
+    width: 38px; height: 52px; border-radius: 3px; flex-shrink: 0;
+  }
+  .book-title {
+    font-family: var(--serif);
+    font-size: 15px; font-weight: 300; color: var(--fg); margin-bottom: 3px;
+  }
+  .book-auth { font-size: 11px; color: var(--muted); line-height: 1.5; }
+  .book-stars { color: var(--accent); font-size: 11px; margin-top: 3px; }
+
+  /* shop */
+  .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .shop-card {
+    border: 1px solid var(--card-border); border-radius: 12px;
+    overflow: hidden; background: var(--card);
+    cursor: pointer; transition: border-color 0.2s;
+  }
+  .shop-card:hover { border-color: var(--accent); }
+  .shop-thumb {
+    height: 80px; display: flex; align-items: center;
+    justify-content: center; font-size: 32px; background: var(--bg);
+  }
+  .shop-info { padding: 11px 13px; }
+  .shop-name {
+    font-family: var(--serif);
+    font-size: 14px; color: var(--fg); margin-bottom: 2px;
+  }
+  .shop-origin { font-size: 10px; color: var(--muted); }
+  .shop-inquire {
+    display: inline-block; margin-top: 8px;
+    font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 10px; border: 1px solid var(--card-border);
+    border-radius: 20px; color: var(--muted);
+    transition: all 0.2s; cursor: pointer; background: none;
+    font-family: var(--sans);
+  }
+  .shop-card:hover .shop-inquire { border-color: var(--accent); color: var(--accent); }
+
+  /* about */
+  .interest-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; }
+  .chip {
+    font-size: 10px; padding: 5px 12px;
+    border: 1px solid var(--card-border); border-radius: 20px; color: var(--muted);
+    transition: border-color 0.2s;
+  }
+  .chip:hover { border-color: var(--accent); }
+
+  /* leave a word */
+  .form-field {
+    width: 100%; padding: 10px 0;
+    border: none; border-bottom: 1px solid var(--card-border);
+    background: transparent; font-family: var(--sans);
+    font-size: 13px; color: var(--fg); margin-bottom: 16px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .form-field:focus { border-bottom-color: var(--accent); }
+  .form-field::placeholder { color: var(--subtle); }
+  textarea.form-field { min-height: 90px; resize: none; }
+  .form-hint {
+    font-size: 11px; color: var(--subtle); line-height: 1.75;
+    margin-bottom: 20px;
+  }
+  .form-submit {
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 9px 24px; border: 1px solid var(--fg);
+    border-radius: 2px; background: transparent;
+    color: var(--fg); cursor: pointer; font-family: var(--sans);
+    transition: all 0.2s;
+  }
+  .form-submit:hover { background: var(--fg); color: var(--window); }
+
+  /* quotes */
+  .quote-block { padding: 20px 0; border-bottom: 1px solid var(--card-border); }
+  .quote-block:last-child { border-bottom: none; }
+  .quote-text {
+    font-family: var(--serif);
+    font-size: 19px; font-weight: 300; font-style: italic;
+    color: var(--fg); line-height: 1.6; margin-bottom: 8px;
+  }
+  .quote-by {
+    font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+  }
+
+  /* cool things */
+  .cool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .cool-card {
+    border: 1px solid var(--card-border); border-radius: 10px;
+    padding: 14px; background: var(--card);
+    transition: border-color 0.2s;
+  }
+  .cool-card:hover { border-color: var(--accent); }
+  .cool-title {
+    font-family: var(--serif);
+    font-size: 14px; color: var(--fg); margin-bottom: 4px;
+  }
+  .cool-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+  /* ── responsive ── */
+  @media (max-width: 520px) {
+    .win-body { padding: 22px 18px 16px; }
+    .icon-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .site-name { font-size: 32px; }
+    .social-bar { gap: 16px; flex-wrap: wrap; }
+    .shop-grid, .photo-grid, .cool-grid { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
-
 <body>
-  <div class="card">
-    <div class="emoji">🌱</div>
-    <h1>Hello, I’m Purvi</h1>
-    <p>
-      This is my first website.<br>
-      I’m learning, building, and growing.
-    </p>
+
+<div class="browser" id="root">
+
+  <!-- titlebar -->
+  <div class="titlebar">
+    <div class="dots">
+      <div class="dot r"></div>
+      <div class="dot y"></div>
+      <div class="dot g"></div>
+    </div>
+    <div class="urlbar">purviews.com</div>
+    <button class="mode-btn" id="modeBtn" onclick="toggleDark()">◐ dark</button>
   </div>
+
+  <!-- window body -->
+  <div class="win-body">
+    <h1 class="site-name">purviews</h1>
+    <p class="site-tagline">welcome to my little corner of the internet</p>
+
+    <div class="icon-grid">
+
+      <!-- about me — SVG portrait -->
+      <div class="icon-card" onclick="openPanel('about')" role="button" tabindex="0">
+        <div class="icon-wrap">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="32" cy="32" r="30" fill="#e8ddd0" stroke="#c9bfb0" stroke-width="1"/>
+            <ellipse cx="32" cy="57" rx="20" ry="10" fill="#a87d6a"/>
+            <ellipse cx="32" cy="51" rx="10" ry="5" fill="#c49070"/>
+            <rect x="26" y="40" width="12" height="10" rx="4" fill="#d4a882"/>
+            <ellipse cx="32" cy="18" rx="13" ry="8" fill="#5c3d28"/>
+            <ellipse cx="20" cy="27" rx="5" ry="9" fill="#5c3d28"/>
+            <ellipse cx="44" cy="27" rx="5" ry="9" fill="#5c3d28"/>
+            <ellipse cx="28" cy="17" rx="4" ry="2" fill="#7a5535" opacity="0.5"/>
+            <circle cx="32" cy="28" r="13" fill="#d4a882"/>
+            <ellipse cx="27" cy="27" rx="2.5" ry="2.5" fill="#3a2510"/>
+            <ellipse cx="37" cy="27" rx="2.5" ry="2.5" fill="#3a2510"/>
+            <circle cx="28" cy="26" r="0.8" fill="#fff"/>
+            <circle cx="38" cy="26" r="0.8" fill="#fff"/>
+            <path d="M24 23.5 Q27 22 30 23.5" stroke="#4a2e14" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+            <path d="M34 23.5 Q37 22 40 23.5" stroke="#4a2e14" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+            <path d="M32 28 Q31 31 29.5 32 Q32 33 34.5 32 Q33 31 32 28" fill="#c4966a"/>
+            <path d="M28 35 Q32 38 36 35" stroke="#9a6040" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+            <ellipse cx="32" cy="36" rx="3.5" ry="1.5" fill="#c47060" opacity="0.7"/>
+            <path d="M52 10 L53 13 L56 14 L53 15 L52 18 L51 15 L48 14 L51 13 Z" fill="#c4a87a"/>
+            <path d="M10 14 L10.8 16.2 L13 17 L10.8 17.8 L10 20 L9.2 17.8 L7 17 L9.2 16.2 Z" fill="#c4a87a" opacity="0.7"/>
+            <circle cx="55" cy="24" r="1.2" fill="#c4a87a"/>
+            <circle cx="9" cy="26" r="0.9" fill="#c4a87a" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="card-label">about me</div>
+      </div>
+
+      <div class="icon-card" onclick="openPanel('journals')" role="button" tabindex="0">
+        <div class="icon-wrap">📔</div>
+        <div class="card-label">journals</div>
+      </div>
+
+      <div class="icon-card" onclick="openPanel('photos')" role="button" tabindex="0">
+        <div class="icon-wrap">📸</div>
+        <div class="card-label">photosets of<br>travels</div>
+      </div>
+
+      <div class="icon-card" onclick="openPanel('books')" role="button" tabindex="0">
+        <div class="icon-wrap">📚</div>
+        <div class="card-label">reads and<br>movies</div>
+      </div>
+
+      <div class="icon-card" onclick="openPanel('shop')" role="button" tabindex="0">
+        <div class="icon-wrap">
+          🛒
+          <div class="badge">!</div>
+        </div>
+        <div class="card-label">shop</div>
+      </div>
+
+      <div class="icon-card" onclick="openPanel('note')" role="button" tabindex="0">
+        <div class="icon-wrap">💬</div>
+        <div class="card-label">leave a word</div>
+      </div>
+
+      <div class="icon-card" onclick="openPanel('quotes')" role="button" tabindex="0">
+        <div class="icon-wrap">💡</div>
+        <div class="card-label">quotes that i<br>reach towards</div>
+      </div>
+
+      <div class="icon-card" onclick="openPanel('cool')" role="button" tabindex="0">
+        <div class="icon-wrap">🔭</div>
+        <div class="card-label">things i find<br>cool</div>
+      </div>
+
+    </div>
+
+    <!-- social bar -->
+    <div class="social-bar">
+      <a class="social-link" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        Instagram
+      </a>
+      <a class="social-link" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+        Twitter / X
+      </a>
+      <a class="social-link" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        LinkedIn
+      </a>
+      <a class="social-link" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Substack
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ── OVERLAY ── -->
+<div class="overlay" id="overlay" onclick="closeIfBg(event)" role="dialog" aria-modal="true">
+  <div class="panel-box" id="panelBox">
+    <button class="panel-close" onclick="closePanel()" aria-label="Close">✕</button>
+    <div id="panelContent"></div>
+  </div>
+</div>
+
+<script>
+  /* ── dark mode ── */
+  let isDark = false;
+  function toggleDark() {
+    isDark = !isDark;
+    document.getElementById('root').className = isDark ? 'dark' : '';
+    document.getElementById('modeBtn').textContent = isDark ? '☀ light' : '◐ dark';
+  }
+
+  /* ── panel system ── */
+  function openPanel(id) {
+    document.getElementById('panelContent').innerHTML = panels[id] || '';
+    document.getElementById('overlay').classList.add('open');
+    document.getElementById('panelBox').scrollTop = 0;
+  }
+  function closePanel() {
+    document.getElementById('overlay').classList.remove('open');
+  }
+  function closeIfBg(e) {
+    if (e.target === document.getElementById('overlay')) closePanel();
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+  /* keyboard support for cards */
+  document.querySelectorAll('.icon-card').forEach(card => {
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
+    });
+  });
+
+  /* ── panel content ── */
+  const panels = {
+
+    about: `
+      <div class="panel-title">About me</div>
+      <div class="panel-sub">a little introduction</div>
+      <p class="panel-intro">A person who collects sunrises, bad films, good books, and too many ceramic mugs from airport gift shops.</p>
+      <p style="font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:12px">
+        I climb rocks on Sunday mornings, run when anxious, paint badly but joyfully, and take photos of light that won't stay.<br><br>
+        By weekday I work in business analysis. The rest of the time I try to notice things.
+      </p>
+      <div class="interest-chips">
+        <span class="chip">🧗 climbing</span>
+        <span class="chip">🏃 running</span>
+        <span class="chip">🎨 painting</span>
+        <span class="chip">📚 reading</span>
+        <span class="chip">✈️ travel</span>
+        <span class="chip">☕ slow mornings</span>
+        <span class="chip">🌄 sunrises</span>
+        <span class="chip">📷 film photography</span>
+      </div>
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--card-border)">
+        <div class="section-label">Professionally</div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.9">
+          Business analyst — detail-oriented, systems thinker, occasional 7am model. Open to collaborations, interesting work, and random side quests.
+        </p>
+      </div>
+    `,
+
+    journals: `
+      <div class="panel-title">Journals</div>
+      <div class="panel-sub">weekly reflections</div>
+      <p class="panel-intro">Small dispatches from wherever I am — thoughts, travels, moments worth keeping.</p>
+      <div class="note-row"><div class="n-week">Week 12</div><div class="n-title">On mornings when the city is still half asleep</div><div class="n-date">Apr 28, 2025</div></div>
+      <div class="note-row"><div class="n-week">Week 11</div><div class="n-title">Oaxaca had a quality of light I keep chasing</div><div class="n-date">Apr 21, 2025</div></div>
+      <div class="note-row"><div class="n-week">Week 10</div><div class="n-title">Small rituals that hold everything together</div><div class="n-date">Apr 14, 2025</div></div>
+      <div class="note-row"><div class="n-week">Week 09</div><div class="n-title">What it means to show up, even badly</div><div class="n-date">Apr 7, 2025</div></div>
+      <div class="note-row"><div class="n-week">Week 08</div><div class="n-title">Lisbon in February felt like a secret</div><div class="n-date">Mar 31, 2025</div></div>
+      <div class="note-row"><div class="n-week">Week 07</div><div class="n-title">On collecting things and letting them go</div><div class="n-date">Mar 24, 2025</div></div>
+    `,
+
+    photos: `
+      <div class="panel-title">Photosets of travels</div>
+      <div class="panel-sub">places & light</div>
+      <p class="panel-intro">Places I've been. Light I've chased. Moments I wanted to keep.</p>
+      <div class="photo-grid">
+        <div class="photo-cell"><div class="photo-thumb">🌵</div><div class="photo-info"><div class="photo-name">Oaxaca, Mexico</div><div class="photo-meta">2025 · 24 photos</div></div></div>
+        <div class="photo-cell"><div class="photo-thumb">🌊</div><div class="photo-info"><div class="photo-name">Lisbon, Portugal</div><div class="photo-meta">2025 · 18 photos</div></div></div>
+        <div class="photo-cell"><div class="photo-thumb">🌸</div><div class="photo-info"><div class="photo-name">Kyoto, Japan</div><div class="photo-meta">2024 · 31 photos</div></div></div>
+        <div class="photo-cell"><div class="photo-thumb">🏔</div><div class="photo-info"><div class="photo-name">Tbilisi, Georgia</div><div class="photo-meta">2024 · 20 photos</div></div></div>
+        <div class="photo-cell"><div class="photo-thumb">🥩</div><div class="photo-info"><div class="photo-name">Buenos Aires</div><div class="photo-meta">2023 · 15 photos</div></div></div>
+        <div class="photo-cell"><div class="photo-thumb">🕌</div><div class="photo-info"><div class="photo-name">Marrakech</div><div class="photo-meta">2024 · 22 photos</div></div></div>
+      </div>
+    `,
+
+    books: `
+      <div class="panel-title">Reads & Movies</div>
+      <div class="panel-sub">what I'm consuming</div>
+      <div class="section-label">Currently reading</div>
+      <div class="book-row"><div class="book-spine" style="background:#8a7a65"></div><div><div class="book-title">The Dispossessed</div><div class="book-auth">Ursula K. Le Guin · Fiction</div><div class="book-auth">A profound novel about anarchism, utopia, and what it means to be free.</div></div></div>
+      <div class="book-row"><div class="book-spine" style="background:#6b7a65"></div><div><div class="book-title">A Field Guide to Getting Lost</div><div class="book-auth">Rebecca Solnit · Essays</div></div></div>
+      <div class="book-row"><div class="book-spine" style="background:#7a6575"></div><div><div class="book-title">The Year of Magical Thinking</div><div class="book-auth">Joan Didion · Memoir</div></div></div>
+      <div class="section-label" style="margin-top:22px">Lately watched</div>
+      <div class="book-row"><div class="book-spine" style="background:#8a657a;border-radius:3px;width:38px;height:52px"></div><div><div class="book-title">Past Lives</div><div class="book-auth">Celine Song · 2023</div><div class="book-stars">★★★★★</div></div></div>
+      <div class="book-row"><div class="book-spine" style="background:#7a6a55;border-radius:3px;width:38px;height:52px"></div><div><div class="book-title">Aftersun</div><div class="book-auth">Charlotte Wells · 2022</div><div class="book-stars">★★★★★</div></div></div>
+      <div class="book-row"><div class="book-spine" style="background:#657a8a;border-radius:3px;width:38px;height:52px"></div><div><div class="book-title">All of Us Strangers</div><div class="book-auth">Andrew Haigh · 2023</div><div class="book-stars">★★★★</div></div></div>
+      <div class="book-row"><div class="book-spine" style="background:#8a7565;border-radius:3px;width:38px;height:52px"></div><div><div class="book-title">Before Sunrise</div><div class="book-auth">Richard Linklater · 1995</div><div class="book-stars">★★★★★</div></div></div>
+    `,
+
+    shop: `
+      <div class="panel-title">Shop</div>
+      <div class="panel-sub">things looking for a new home</div>
+      <p class="panel-intro">Objects I picked up on my travels — each with a story. Send me a note if something calls to you.</p>
+      <div class="shop-grid">
+        <div class="shop-card"><div class="shop-thumb">🏺</div><div class="shop-info"><div class="shop-name">Oaxacan ceramic pot</div><div class="shop-origin">Mexico · 2024</div><button class="shop-inquire" onclick="openPanel('note')">inquire →</button></div></div>
+        <div class="shop-card"><div class="shop-thumb">📚</div><div class="shop-info"><div class="shop-name">Vintage travel atlas</div><div class="shop-origin">Lisbon flea market</div><button class="shop-inquire" onclick="openPanel('note')">inquire →</button></div></div>
+        <div class="shop-card"><div class="shop-thumb">🧵</div><div class="shop-info"><div class="shop-name">Hand-woven wool scarf</div><div class="shop-origin">Georgia · 2023</div><button class="shop-inquire" onclick="openPanel('note')">inquire →</button></div></div>
+        <div class="shop-card"><div class="shop-thumb">🪞</div><div class="shop-info"><div class="shop-name">Antique hand mirror</div><div class="shop-origin">Buenos Aires</div><button class="shop-inquire" onclick="openPanel('note')">inquire →</button></div></div>
+        <div class="shop-card"><div class="shop-thumb">🕯️</div><div class="shop-info"><div class="shop-name">Beeswax taper candles</div><div class="shop-origin">Tbilisi market</div><button class="shop-inquire" onclick="openPanel('note')">inquire →</button></div></div>
+        <div class="shop-card"><div class="shop-thumb">🔶</div><div class="shop-info"><div class="shop-name">Brass incense holder</div><div class="shop-origin">Marrakech · 2024</div><button class="shop-inquire" onclick="openPanel('note')">inquire →</button></div></div>
+      </div>
+    `,
+
+    note: `
+      <div class="panel-title">Leave a word</div>
+      <div class="panel-sub">I read every one</div>
+      <p class="panel-intro">Whether it's about the shop, a climb, a run, a collab, or just a hello — I'm here.</p>
+      <input class="form-field" type="text" placeholder="Your name (optional)" />
+      <input class="form-field" type="email" placeholder="Your email (if you'd like a reply)" />
+      <textarea class="form-field" placeholder="What's on your mind?"></textarea>
+      <p class="form-hint">Open to: shopping inquiries · 7am modeling · Sunday climbing · running buddies · painting together · park reading dates · business analyst work · collaborations · anything in between.</p>
+      <button class="form-submit">send →</button>
+    `,
+
+    quotes: `
+      <div class="panel-title">Quotes I reach towards</div>
+      <div class="panel-sub">words that stayed</div>
+      <div class="quote-block"><div class="quote-text">"Not all those who wander are lost."</div><div class="quote-by">— J.R.R. Tolkien</div></div>
+      <div class="quote-block"><div class="quote-text">"The most courageous act is still to think for yourself. Aloud."</div><div class="quote-by">— Coco Chanel</div></div>
+      <div class="quote-block"><div class="quote-text">"I am not afraid of storms, for I am learning how to sail my ship."</div><div class="quote-by">— Louisa May Alcott</div></div>
+      <div class="quote-block"><div class="quote-text">"Keep some room in your heart for the unimaginable."</div><div class="quote-by">— Mary Oliver</div></div>
+      <div class="quote-block"><div class="quote-text">"She was not lost — she was becoming."</div><div class="quote-by">— Ijeoma Umebinyuo</div></div>
+      <div class="quote-block"><div class="quote-text">"In the middle of difficulty lies opportunity."</div><div class="quote-by">— Albert Einstein</div></div>
+    `,
+
+    cool: `
+      <div class="panel-title">Things I find cool</div>
+      <div class="panel-sub">a curated little list</div>
+      <p class="panel-intro">Tools, ideas, places, and things I keep returning to.</p>
+      <div class="cool-grid">
+        <div class="cool-card"><div class="cool-title">🗺 Are.na</div><div class="cool-desc">A beautiful platform for collecting ideas and visual references.</div></div>
+        <div class="cool-card"><div class="cool-title">📡 Shortwave Radio</div><div class="cool-desc">Listening to distant stations late at night.</div></div>
+        <div class="cool-card"><div class="cool-title">🧪 Fermentation</div><div class="cool-desc">Making kombucha, kimchi, and watching things transform.</div></div>
+        <div class="cool-card"><div class="cool-title">🌍 Slow Travel</div><div class="cool-desc">One city, one month. Becoming a temporary local.</div></div>
+        <div class="cool-card"><div class="cool-title">📠 Letter Writing</div><div class="cool-desc">Actual handwritten letters to actual people.</div></div>
+        <div class="cool-card"><div class="cool-title">🔬 Citizen Science</div><div class="cool-desc">iNaturalist, star mapping, tide observation.</div></div>
+      </div>
+    `
+  };
+</script>
 </body>
 </html>
