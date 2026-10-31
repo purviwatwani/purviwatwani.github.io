@@ -1,12 +1,13 @@
-"""Pulls Letterboxd films + Goodreads currently-reading into data/*.json. Standard library only."""
+"""Pulls Letterboxd films + Literal currently-reading into data/*.json. Standard library only."""
 import json, os, re, sys, html as htmlmod, urllib.request
 from email.utils import parsedate_to_datetime
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
 LB_USER = "purviews"
-GOODREADS_ID = "155996055"   # the number in your profile link, e.g. 12345678
-GOODREADS_SHELF = "currently-reading"
+LITERAL_HANDLE = "purviews"
+LITERAL_PROFILE_ID = "cmvwt7hbm107320457q65c5m50ju"
+LITERAL_API = "https://literal.club/graphql/"
 SUBSTACK_PUB = "purview23"                    # purview23.substack.com
 
 UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
@@ -47,27 +48,34 @@ def parse_letterboxd(xml_text):
             break
     return {"profile": f"https://letterboxd.com/{LB_USER}/", "films": films}
 
-def parse_goodreads(xml_text):
-    root = ET.fromstring(xml_text)
-    books = []
-    for it in root.iter("item"):
-        title = (it.findtext("title") or "").strip()
-        if not title:
-            continue
-        cover = (it.findtext("book_large_image_url") or it.findtext("book_image_url") or "").strip()
-        books.append({"title": title, "author": (it.findtext("author_name") or "").strip(), "cover": cover})
-        if len(books) >= 8:
-            break
-    return {"profile": f"https://www.goodreads.com/user/show/{GOODREADS_ID}", "books": books}
-
 def letterboxd():
     return parse_letterboxd(get(f"https://letterboxd.com/{LB_USER}/rss/"))
 
-def goodreads():
-    if GOODREADS_ID.startswith("PUT_"):
-        raise RuntimeError("set GOODREADS_ID at the top of scripts/sync.py")
-    url = f"https://www.goodreads.com/review/list_rss/{GOODREADS_ID}?shelf={GOODREADS_SHELF}"
-    return parse_goodreads(get(url))
+def literal():
+    query = f"""query {{
+      booksByReadingStateAndProfile(
+        profileId: "{LITERAL_PROFILE_ID}"
+        readingStatus: IS_READING
+        limit: 8
+        offset: 0
+      ) {{
+        title
+        cover
+        authors {{ name }}
+      }}
+    }}"""
+    body = json.dumps({"query": query}).encode("utf-8")
+    req = urllib.request.Request(LITERAL_API, data=body, headers={**UA, "Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        result = json.loads(r.read().decode("utf-8", "replace"))
+    if result.get("errors"):
+        raise RuntimeError("Literal API: " + result["errors"][0].get("message", "request failed"))
+    books = []
+    for b in result.get("data", {}).get("booksByReadingStateAndProfile", []):
+        books.append({"title": b.get("title", ""),
+                      "author": ", ".join(a.get("name", "") for a in b.get("authors", [])),
+                      "cover": b.get("cover", "")})
+    return {"profile": f"https://literal.club/{LITERAL_HANDLE}", "books": books}
 
 def clean(text, n=170):
     t = re.sub(r"<[^>]+>", " ", text or "")
@@ -112,7 +120,7 @@ def substack():
     return {"profile": base, "posts": out}
 
 if __name__ == "__main__":
-    for name, fn, key in (("letterboxd", letterboxd, "films"), ("books", goodreads, "books"), ("articles", substack, "posts")):
+    for name, fn, key in (("letterboxd", letterboxd, "films"), ("books", literal, "books"), ("articles", substack, "posts")):
         try:
             data = fn()
             if data[key]:
