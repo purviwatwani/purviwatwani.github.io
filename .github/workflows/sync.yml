@@ -12,15 +12,22 @@ permissions:
   contents: write
 jobs:
   sync:
+    # The bot commits converted JPEGs back to images/. Ignore that commit so it
+    # doesn't start a second sync run.
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
+      - name: Install image conversion support
+        run: python -m pip install --upgrade Pillow pillow-heif
+      - name: Convert iPhone HEIC photos for browsers
+        run: python scripts/convert_images.py
       - run: mkdir -p data && python scripts/sync.py
       - name: Commit changes
         run: |
           git config user.name "sync-bot"
           git config user.email "sync-bot@users.noreply.github.com"
-          git add data
+          git add images data
           git diff --cached --quiet || (git commit -m "Update reads and films" && git push)
