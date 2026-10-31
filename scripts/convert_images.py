@@ -18,10 +18,12 @@ def main():
         return
 
     for source in sorted(IMAGE_ROOT.rglob("*")):
-        if not source.is_file() or source.suffix.lower() in {".jpg", ".jpeg"}:
+        if not source.is_file():
             continue
 
         try:
+            # Inspect the file contents, not the filename: iPhones or upload
+            # tools can leave HEIC photos with .png/.jpg/.jpeg extensions.
             if not is_supported(str(source)):
                 continue
             destination = source.with_suffix(".jpg")
