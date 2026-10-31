@@ -292,7 +292,7 @@ function travelHTML(){
  const albums=(DATA.travel&&DATA.travel.albums)||[];
  if(!DATA.travel)return '<div class="p-title">Travels</div><p class="gallery-empty">Loading travel photos…</p>';
  if(!albums.length)return '<div class="p-title">Travels</div><p class="gallery-empty">No travel photos yet.</p>';
- return '<div class="p-title">Travels</div><div class="p-sub">places</div><p class="p-intro">Places I\'ve been. sunsets i\'ve chased and people i cherished dearly.</p><div class="cards">'+albums.map(a=>{
+ return '<div class="p-title">Travels</div><p class="p-intro">Places I\'ve been, sunsets i\'ve chased and people i cherished dearly.</p><div class="cards">'+albums.map(a=>{
   const cover=a.images&&a.images[0];
   return '<button type="button" class="card travel-card" data-album="'+esc(a.slug)+'"><div class="thumb">'+(cover?'<img src="'+esc(cover)+'" alt="'+esc(a.title)+'" loading="lazy">':'📷')+'</div><div class="in"><div class="n">'+esc(a.title)+'</div><div class="m">'+a.images.length+' photos · open gallery</div></div></button>';
  }).join('')+'</div>';
