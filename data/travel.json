@@ -1,6 +1,13 @@
 {
   "albums": [
     {
+      "slug": "dharamkot",
+      "title": "Dharamkot",
+      "images": [
+        "images/dharamkot/IMG_0341.png"
+      ]
+    },
+    {
       "slug": "vietnam",
       "title": "Vietnam",
       "images": [
