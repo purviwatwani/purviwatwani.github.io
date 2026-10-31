@@ -3,715 +3,358 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Purviews</title>
+<title>Purviews — Purvi Watwani</title>
+<meta name="description" content="Purvi's little corner of the internet: journals, travel photos, reads, quotes and side quests."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #edeae2;
-    --window: #f5f2eb;
-    --card: #faf8f3;
-    --card-border: #ddd9ce;
-    --card-shadow: rgba(0,0,0,0.06);
-    --fg: #2c2a26;
-    --muted: #7a7670;
-    --subtle: #b0ac9f;
-    --accent: #8a7a5a;
-    --titlebar: #e8e4db;
-    --dot-r: #ff5f57;
-    --dot-y: #febc2e;
-    --dot-g: #28c840;
-    --social-border: #ccc8bc;
-    --serif: 'Cormorant Garamond', Georgia, serif;
-    --sans: 'DM Sans', system-ui, sans-serif;
-    --overlay-bg: rgba(30, 28, 24, 0.5);
-  }
-
-  .dark {
-    --bg: #1a1917;
-    --window: #242220;
-    --card: #2c2a26;
-    --card-border: #3a3832;
-    --card-shadow: rgba(0,0,0,0.35);
-    --fg: #e4e0d5;
-    --muted: #7a7670;
-    --subtle: #4a4840;
-    --accent: #c4a87a;
-    --titlebar: #1e1c1a;
-    --social-border: #3a3832;
-    --overlay-bg: rgba(0,0,0,0.65);
-  }
-
-  html, body {
-    min-height: 100vh;
-    background: var(--bg);
-    font-family: var(--sans);
-    transition: background 0.4s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px 16px;
-  }
-
-  /* ── grain overlay ── */
-  body::before {
-    content: '';
-    position: fixed; inset: 0; z-index: 0;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    opacity: 0.6;
-  }
-
-  /* ── browser window ── */
-  .browser {
-    position: relative; z-index: 1;
-    width: 100%; max-width: 680px;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 2px 0 rgba(255,255,255,0.15) inset,
-                0 12px 50px rgba(0,0,0,0.2),
-                0 2px 8px rgba(0,0,0,0.1);
-    background: var(--window);
-    transition: background 0.4s ease;
-    animation: fadeUp 0.6s ease forwards;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── titlebar ── */
-  .titlebar {
-    background: var(--titlebar);
-    padding: 12px 16px;
-    display: flex; align-items: center; gap: 10px;
-    border-bottom: 1px solid var(--card-border);
-    transition: background 0.4s, border-color 0.4s;
-  }
-  .dots { display: flex; gap: 6px; }
-  .dot {
-    width: 12px; height: 12px; border-radius: 50%;
-    transition: opacity 0.2s;
-  }
-  .dot:hover { opacity: 0.75; }
-  .dot.r { background: var(--dot-r); }
-  .dot.y { background: var(--dot-y); }
-  .dot.g { background: var(--dot-g); }
-
-  .urlbar {
-    flex: 1;
-    background: var(--card);
-    border: 0.5px solid var(--card-border);
-    border-radius: 6px;
-    padding: 4px 12px;
-    font-size: 11px; color: var(--muted);
-    font-family: var(--sans); letter-spacing: 0.03em;
-    text-align: center;
-    transition: background 0.4s, border-color 0.4s, color 0.4s;
-  }
-
-  .mode-btn {
-    font-size: 11px; padding: 4px 11px;
-    border: 0.5px solid var(--card-border);
-    border-radius: 6px;
-    background: transparent; color: var(--muted);
-    cursor: pointer; font-family: var(--sans);
-    transition: all 0.2s; white-space: nowrap;
-  }
-  .mode-btn:hover { color: var(--fg); border-color: var(--muted); }
-
-  /* ── window body ── */
-  .win-body { padding: 30px 32px 22px; }
-
-  .site-name {
-    font-family: var(--serif);
-    font-size: 42px; font-weight: 300;
-    text-align: center; color: var(--fg);
-    letter-spacing: 0.05em; margin-bottom: 7px;
-    transition: color 0.4s;
-  }
-  .site-tagline {
-    text-align: center; font-size: 12px;
-    color: var(--muted); letter-spacing: 0.07em;
-    margin-bottom: 30px; font-weight: 300;
-  }
-
-  /* ── icon grid ── */
-  .icon-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 26px;
-  }
-
-  .icon-card {
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: 14px;
-    padding: 22px 10px 17px;
-    display: flex; flex-direction: column;
-    align-items: center; gap: 13px;
-    cursor: pointer;
-    transition: transform 0.18s ease,
-                box-shadow 0.18s ease,
-                background 0.4s,
-                border-color 0.4s;
-    box-shadow: 0 2px 8px var(--card-shadow);
-    user-select: none;
-  }
-  .icon-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px var(--card-shadow);
-    border-color: var(--accent);
-  }
-  .icon-card:active { transform: translateY(-1px); }
-
-  .icon-wrap {
-    width: 64px; height: 64px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 40px; position: relative; line-height: 1;
-  }
-
-  .badge {
-    position: absolute; top: -4px; right: -4px;
-    width: 17px; height: 17px; border-radius: 50%;
-    background: #d95b3a;
-    border: 2px solid var(--card);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 9px; color: #fff; font-weight: 600;
-    font-family: var(--sans);
-    transition: border-color 0.4s;
-  }
-
-  .card-label {
-    font-size: 11.5px; color: var(--fg);
-    text-align: center; line-height: 1.45;
-    letter-spacing: 0.01em; font-weight: 300;
-    transition: color 0.4s;
-  }
-
-  /* ── social bar ── */
-  .social-bar {
-    border-top: 1px solid var(--social-border);
-    padding: 15px 0 5px;
-    display: flex; align-items: center; justify-content: center;
-    gap: 30px;
-    transition: border-color 0.4s;
-  }
-  .social-link {
-    display: flex; align-items: center; gap: 6px;
-    text-decoration: none; color: var(--muted);
-    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-    font-weight: 400; transition: color 0.2s;
-  }
-  .social-link:hover { color: var(--fg); }
-  .social-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-
-  /* ── panel overlay ── */
-  .overlay {
-    display: none;
-    position: fixed; inset: 0; z-index: 200;
-    background: var(--overlay-bg);
-    align-items: center; justify-content: center;
-    padding: 24px;
-    backdrop-filter: blur(2px);
-    animation: overlayIn 0.2s ease;
-  }
-  .overlay.open { display: flex; }
-
-  @keyframes overlayIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-
-  .panel-box {
-    background: var(--window);
-    border-radius: 16px;
-    width: min(580px, 100%);
-    max-height: 82vh; overflow-y: auto;
-    padding: 36px;
-    position: relative;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.28);
-    animation: panelIn 0.25s ease;
-    transition: background 0.4s;
-    scrollbar-width: thin;
-    scrollbar-color: var(--card-border) transparent;
-  }
-
-  @keyframes panelIn {
-    from { opacity: 0; transform: translateY(12px) scale(0.98); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  .panel-close {
-    position: absolute; top: 18px; right: 18px;
-    width: 30px; height: 30px; border-radius: 50%;
-    background: var(--card); border: 1px solid var(--card-border);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 13px; color: var(--muted);
-    transition: all 0.2s; line-height: 1;
-  }
-  .panel-close:hover { color: var(--fg); border-color: var(--muted); }
-
-  /* ── panel content typography ── */
-  .panel-title {
-    font-family: var(--serif);
-    font-size: 28px; font-weight: 300; color: var(--fg);
-    margin-bottom: 4px; transition: color 0.4s;
-  }
-  .panel-sub {
-    font-size: 10px; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--muted);
-    margin-bottom: 22px;
-  }
-  .panel-intro {
-    font-family: var(--serif);
-    font-size: 15px; font-style: italic; font-weight: 300;
-    color: var(--muted); line-height: 1.85;
-    margin-bottom: 22px; max-width: 440px;
-  }
-  .section-label {
-    font-size: 9px; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--subtle);
-    margin-bottom: 12px; margin-top: 20px;
-  }
-
-  /* notes */
-  .note-row {
-    padding: 13px 0;
-    border-bottom: 1px solid var(--card-border);
-    cursor: pointer;
-  }
-  .note-row:last-child { border-bottom: none; }
-  .note-row:hover .n-title { color: var(--accent); }
-  .n-week {
-    font-size: 9px; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--subtle); margin-bottom: 4px;
-  }
-  .n-title {
-    font-family: var(--serif);
-    font-size: 16px; font-weight: 300; color: var(--fg);
-    transition: color 0.2s; line-height: 1.4;
-  }
-  .n-date { font-size: 10px; color: var(--subtle); margin-top: 3px; }
-
-  /* photos */
-  .photo-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  .photo-cell {
-    border: 1px solid var(--card-border);
-    border-radius: 10px; overflow: hidden;
-    background: var(--card);
-    display: flex; flex-direction: column;
-    cursor: pointer; transition: border-color 0.2s, transform 0.18s;
-  }
-  .photo-cell:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .photo-thumb {
-    
-  height: 180px;
-  overflow: hidden;
-  background: var(--bg);
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#fdf3e8;--bg2:#f6dfe0;--card:#fffaf4;--line:#ecd8c4;--fg:#2d2622;--muted:#7d6b62;--subtle:#b39f92;
+--accent:#c4553b;--shadow:rgba(150,80,50,.12);--window:#fffaf4;--overlay:rgba(30,28,24,.45);
+--serif:'Cormorant Garamond',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;
 }
-
-.photo-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+html.dark{
+--bg:#1a1917;--bg2:#211f1c;--card:#2a2824;--line:#3a3832;--fg:#e8e4d9;--muted:#948f84;--subtle:#5a574e;
+--accent:#c9ad7e;--shadow:rgba(0,0,0,.4);--window:#242220;--overlay:rgba(0,0,0,.6);
 }
-  .photo-info { padding: 10px 12px; }
-  .photo-name {
-    font-family: var(--serif);
-    font-size: 14px; color: var(--fg); margin-bottom: 2px;
-  }
-  .photo-meta { font-size: 10px; color: var(--muted); }
+html{scroll-behavior:smooth}
+html:not(.dark) body{background:radial-gradient(900px 500px at 90% -5%,#f9d6c9 0,transparent 65%),radial-gradient(700px 500px at -5% 105%,#dfd6f3 0,transparent 65%),radial-gradient(600px 400px at 60% 110%,#d4ebd9 0,transparent 70%),#fdf3e8}
+html:not(.dark) .tile:nth-child(1){background:#fde0d3}
+html:not(.dark) .tile:nth-child(2){background:#e7ddf6}
+html:not(.dark) .tile:nth-child(3){background:#d6ebf3}
+html:not(.dark) .tile:nth-child(4){background:#fbedbd}
+html:not(.dark) .tile:nth-child(5){background:#fbd7e2}
+html:not(.dark) .tile:nth-child(6){background:#d9eed6}
+html:not(.dark) .tile:nth-child(7){background:#ffe2bd}
+html:not(.dark) .tile:nth-child(8){background:#d3e3f8}
+html:not(.dark) .tile{border-color:rgba(255,255,255,.7)}
+html:not(.dark) .tile small{color:#6e5d54}
+html:not(.dark) .drawer{background:#fff6ec}
+html:not(.dark) .thumb{background:#f7e3d6}
+body{min-height:100vh;background:radial-gradient(1200px 600px at 85% -10%,var(--bg2),transparent 70%),var(--bg);
+color:var(--fg);font-family:var(--sans);font-weight:300;transition:background .4s,color .4s;display:flex;flex-direction:column}
+a{color:inherit}
+.wrap{width:100%;max-width:1240px;margin:0 auto;padding:0 40px;flex:1;display:flex;flex-direction:column}
+.titlebar,.tagline{display:none}
 
-  /* books */
-  .book-row {
-    display: flex; gap: 13px; margin-bottom: 16px;
-    align-items: flex-start;
-  }
-  .book-spine {
-    width: 38px; height: 52px; border-radius: 3px; flex-shrink: 0;
-  }
-  .book-title {
-    font-family: var(--serif);
-    font-size: 15px; font-weight: 300; color: var(--fg); margin-bottom: 3px;
-  }
-  .book-auth { font-size: 11px; color: var(--muted); line-height: 1.5; }
-  .book-stars { color: var(--accent); font-size: 11px; margin-top: 3px; }
+/* top bar */
+.top{display:flex;align-items:center;justify-content:flex-end;padding:28px 0}
+.logo{font-family:var(--serif);font-size:24px;letter-spacing:.06em}
+.top-right{display:flex;gap:14px;align-items:center}
+.pill{font:400 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;padding:8px 16px;border:1px solid var(--line);
+border-radius:99px;background:transparent;color:var(--muted);cursor:pointer;text-decoration:none;transition:.2s}
+.pill:hover{color:var(--fg);border-color:var(--accent)}
 
-  /* shop */
-  .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .shop-card {
-    border: 1px solid var(--card-border); border-radius: 12px;
-    overflow: hidden; background: var(--card);
-    cursor: pointer; transition: border-color 0.2s;
-  }
-  .shop-card:hover { border-color: var(--accent); }
-  .shop-thumb {
-    height: 80px; display: flex; align-items: center;
-    justify-content: center; font-size: 32px; background: var(--bg);
-  }
-  .shop-info { padding: 11px 13px; }
-  .shop-name {
-    font-family: var(--serif);
-    font-size: 14px; color: var(--fg); margin-bottom: 2px;
-  }
-  .shop-origin { font-size: 10px; color: var(--muted); }
-  .shop-inquire {
-    display: inline-block; margin-top: 8px;
-    font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
-    padding: 4px 10px; border: 1px solid var(--card-border);
-    border-radius: 20px; color: var(--muted);
-    transition: all 0.2s; cursor: pointer; background: none;
-    font-family: var(--sans);
-  }
-  .shop-card:hover .shop-inquire { border-color: var(--accent); color: var(--accent); }
+/* hero */
+main{flex:1;display:flex;align-items:center}
+.hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:72px;align-items:center;padding:24px 0 56px}
+.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:22px}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(64px,8vw,112px);line-height:.95;letter-spacing:-.01em;margin-bottom:26px}
+h1 em{font-style:italic;color:var(--accent)}
+.lede{font-family:var(--serif);font-size:23px;line-height:1.55;color:var(--muted);max-width:430px;margin-bottom:34px}
+.socials{display:flex;flex-wrap:wrap;gap:10px}
+.socials a{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+text-decoration:none;color:var(--muted);padding:9px 16px;border:1px solid var(--line);border-radius:99px;transition:.2s}
+.socials a:hover{color:var(--fg);border-color:var(--accent);transform:translateY(-1px)}
+.socials svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
-  /* about */
-  .interest-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; }
-  .chip {
-    font-size: 10px; padding: 5px 12px;
-    border: 1px solid var(--card-border); border-radius: 20px; color: var(--muted);
-    transition: border-color 0.2s;
-  }
-  .chip:hover { border-color: var(--accent); }
+/* tiles */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 18px 20px;min-height:176px;
+display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;text-align:left;font:inherit;color:inherit;
+cursor:pointer;box-shadow:0 2px 10px var(--shadow);transition:transform .2s,box-shadow .2s,border-color .2s,background .4s;position:relative}
+.tile:hover,.tile:focus-visible{transform:translateY(-5px);box-shadow:0 14px 30px var(--shadow);border-color:var(--accent);outline:none}
+.tile .ic{font-size:38px;line-height:1}
+.tile .ic svg{width:44px;height:44px;display:block}
+.tile .ic-me svg{width:56px;height:56px;margin:-6px 0 -6px -4px}
+.tile b{display:block;font:400 21px var(--serif);margin-bottom:3px}
+.tile small{font-size:11.5px;color:var(--muted);line-height:1.4}
+.tile .dot{position:absolute;top:16px;right:16px;width:9px;height:9px;border-radius:50%;background:#d95b3a}
 
-  /* leave a word */
-  .form-field {
-    width: 100%; padding: 10px 0;
-    border: none; border-bottom: 1px solid var(--card-border);
-    background: transparent; font-family: var(--sans);
-    font-size: 13px; color: var(--fg); margin-bottom: 16px;
-    outline: none; transition: border-color 0.2s;
-  }
-  .form-field:focus { border-bottom-color: var(--accent); }
-  .form-field::placeholder { color: var(--subtle); }
-  textarea.form-field { min-height: 90px; resize: none; }
-  .form-hint {
-    font-size: 11px; color: var(--subtle); line-height: 1.75;
-    margin-bottom: 20px;
-  }
-  .form-submit {
-    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-    padding: 9px 24px; border: 1px solid var(--fg);
-    border-radius: 2px; background: transparent;
-    color: var(--fg); cursor: pointer; font-family: var(--sans);
-    transition: all 0.2s;
-  }
-  .form-submit:hover { background: var(--fg); color: var(--window); }
+footer{padding:26px 0 34px;font-size:11px;letter-spacing:.08em;color:var(--subtle);display:flex;justify-content:space-between;border-top:1px solid var(--line)}
 
-  /* quotes */
-  .quote-block { padding: 20px 0; border-bottom: 1px solid var(--card-border); }
-  .quote-block:last-child { border-bottom: none; }
-  .quote-text {
-    font-family: var(--serif);
-    font-size: 19px; font-weight: 300; font-style: italic;
-    color: var(--fg); line-height: 1.6; margin-bottom: 8px;
-  }
-  .quote-by {
-    font-size: 10px; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--muted);
-  }
+/* drawer */
+.overlay{position:fixed;inset:0;z-index:50;background:var(--overlay);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .25s}
+.overlay.open{opacity:1;pointer-events:auto}
+.drawer{position:absolute;top:0;right:0;height:100%;width:min(640px,100%);background:var(--bg);overflow-y:auto;
+padding:56px 52px 60px;transform:translateX(40px);transition:transform .3s ease;box-shadow:-20px 0 60px rgba(0,0,0,.2)}
+.overlay.open .drawer{transform:none}
+.close{position:absolute;top:20px;right:22px;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);
+color:var(--muted);cursor:pointer;font-size:14px;transition:.2s}
+.close:hover{color:var(--fg);border-color:var(--accent)}
+.p-title{font:300 44px/1.1 var(--serif);margin-bottom:6px}
+.p-sub{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:24px}
+.p-intro{font:italic 300 20px/1.7 var(--serif);color:var(--muted);margin-bottom:26px}
+.p-text{font-size:14.5px;line-height:1.9;color:var(--muted);margin-bottom:14px}
+.label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle);margin:26px 0 12px}
+.row{padding:16px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+.row .k{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle);margin-bottom:4px}
+.row .t{font:400 19px/1.4 var(--serif)}
+.row .d{font-size:11px;color:var(--subtle);margin-top:3px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.thumb{height:150px;display:flex;align-items:center;justify-content:center;font-size:38px;background:var(--bg2)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.card .in{padding:13px 15px}
+.card .n{font:400 17px var(--serif);margin-bottom:2px}
+.card .m{font-size:11px;color:var(--muted);line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.chip{font-size:12px;padding:7px 15px;border:1px solid var(--line);border-radius:99px;color:var(--muted);background:var(--card)}
+.book{display:flex;gap:16px;margin-bottom:20px}
+.spine{width:42px;height:58px;border-radius:3px;flex-shrink:0}
+.book .t{font:400 18px var(--serif);margin-bottom:2px}
+.book .a{font-size:12px;color:var(--muted);line-height:1.6}
+.stars{color:var(--accent);font-size:12px;margin-top:3px}
+.cover{width:42px;height:62px;object-fit:cover;border-radius:3px;flex-shrink:0;box-shadow:0 2px 8px var(--shadow)}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.links a{font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--muted);padding:9px 16px;border:1px solid var(--line);border-radius:99px}
+.links a:hover{color:var(--fg);border-color:var(--accent)}
+.quote{padding:24px 0;border-bottom:1px solid var(--line)}
+.quote:last-child{border:0}
+.quote p{font:italic 300 25px/1.5 var(--serif);margin-bottom:8px}
+.quote span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.field{width:100%;padding:12px 0;border:0;border-bottom:1px solid var(--line);background:transparent;font:300 15px var(--sans);color:var(--fg);margin-bottom:18px;outline:none;transition:border-color .2s}
+.field:focus{border-bottom-color:var(--accent)}
+.field::placeholder{color:var(--subtle)}
+textarea.field{min-height:110px;resize:none}
+.btn{font:400 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;padding:12px 30px;border:1px solid var(--fg);border-radius:99px;background:transparent;color:var(--fg);cursor:pointer;transition:.2s}
+.btn:hover{background:var(--fg);color:var(--bg)}
+.small-btn{margin-top:10px;font:400 10px var(--sans);letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--line);border-radius:99px;background:none;color:var(--muted);cursor:pointer}
+.card:hover .small-btn{border-color:var(--accent);color:var(--accent)}
 
-  /* cool things */
-  .cool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .cool-card {
-    border: 1px solid var(--card-border); border-radius: 10px;
-    padding: 14px; background: var(--card);
-    transition: border-color 0.2s;
-  }
-  .cool-card:hover { border-color: var(--accent); }
-  .cool-title {
-    font-family: var(--serif);
-    font-size: 14px; color: var(--fg); margin-bottom: 4px;
-  }
-  .cool-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
+/* responsive */
+@media (max-width:1060px){
+ .hero{grid-template-columns:1fr;gap:44px;padding-top:8px}
+ .lede{max-width:560px}
+}
+@media (max-width:640px){
+ .wrap{padding:0 20px}
+ .grid{grid-template-columns:repeat(2,1fr);gap:12px}
+ .tile{min-height:150px}
+ .drawer{padding:56px 24px 48px}
+ .p-title{font-size:36px}
+ .cards{grid-template-columns:1fr}
+ footer{flex-direction:column;gap:6px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
-  /* ── responsive ── */
-  @media (max-width: 520px) {
-    .win-body { padding: 22px 18px 16px; }
-    .icon-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .site-name { font-size: 32px; }
-    .social-bar { gap: 16px; flex-wrap: wrap; }
-    .shop-grid, .photo-grid, .cool-grid { grid-template-columns: 1fr; }
-  }
+/* ===== PHONE: the original "little browser window" look ===== */
+@media (max-width:700px){
+ html:not(.dark){--bg:#edeae2;--window:#f5f2eb;--card:#faf8f3;--line:#ddd9ce;--fg:#2c2a26;--muted:#7a7670;--subtle:#b0ac9f;--accent:#8a7a5a;--shadow:rgba(0,0,0,.06)}
+ html.dark{--card:#2c2a26}
+ html:not(.dark) body{background:#edeae2}
+ body{justify-content:center;align-items:center;padding:24px 16px}
+ .wrap{flex:none;max-width:680px;padding:0;background:var(--window);border-radius:14px;overflow:hidden;box-shadow:0 12px 50px rgba(0,0,0,.2),0 2px 8px rgba(0,0,0,.1);transition:background .4s}
+ .top,footer,.eyebrow,.lede{display:none}
+ .titlebar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--line)}
+ html:not(.dark) .titlebar{background:#e8e4db}
+ html.dark .titlebar{background:#1e1c1a}
+ .dots{display:flex;gap:6px}.dots i{width:12px;height:12px;border-radius:50%}
+ .dots .r{background:#ff5f57}.dots .y{background:#febc2e}.dots .g{background:#28c840}
+ .urlbar{flex:1;background:var(--card);border:.5px solid var(--line);border-radius:6px;padding:4px 12px;font-size:11px;color:var(--muted);letter-spacing:.03em;text-align:center}
+ .mode-btn{font:300 11px var(--sans);padding:4px 11px;border:.5px solid var(--line);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap}
+ main{display:block}
+ .hero{display:flex;flex-direction:column;align-items:stretch;gap:0;padding:22px 18px 16px}
+ .hero>div{display:contents}
+ h1{order:1;text-align:center;font-size:32px;letter-spacing:.05em;margin-bottom:7px;line-height:1.2}
+ h1 em{font-style:normal;color:inherit}
+ .tagline{order:2;display:block;text-align:center;font-size:12px;color:var(--muted);letter-spacing:.07em;margin-bottom:26px}
+ .grid{order:3;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:22px}
+ .socials{order:4;justify-content:center;gap:12px 16px;border-top:1px solid var(--line);padding-top:15px}
+ .socials a{border:0;padding:0;font-size:10px;border-radius:0}
+ .socials a:hover{transform:none}
+ html:not(.dark) .tile:nth-child(n){background:var(--card);border-color:var(--line)}
+ html:not(.dark) .tile small{color:var(--muted)}
+ .tile{min-height:0;border-radius:14px;padding:22px 10px 17px;align-items:center;justify-content:flex-start;gap:13px;text-align:center;box-shadow:0 2px 8px var(--shadow)}
+ .tile .ic{width:64px;height:64px;display:flex;align-items:center;justify-content:center;font-size:40px}
+ .tile .ic-me svg{width:64px;height:64px;margin:0}
+ .tile b{font:300 11.5px/1.45 var(--sans);margin:0;letter-spacing:.01em}
+ .tile small{display:none}
+ .tile .dot{top:14px;right:calc(50% - 40px);width:17px;height:17px;border:2px solid var(--card)}
+ .overlay{display:flex;align-items:center;justify-content:center;padding:24px}
+ .drawer{position:relative;height:auto;max-height:82vh;width:min(580px,100%);border-radius:16px;padding:36px 28px;transform:translateY(12px) scale(.98)}
+ .overlay.open .drawer{transform:none}
+ html:not(.dark) .drawer{background:var(--window)}
+ html.dark .drawer{background:var(--window)}
+ html:not(.dark) .thumb{background:var(--bg)}
+ .p-title{font-size:30px}
+ .cards{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
-
-<div class="browser" id="root">
-
-  <!-- titlebar -->
-  <div class="titlebar">
-    <div class="dots">
-      <div class="dot r"></div>
-      <div class="dot y"></div>
-      <div class="dot g"></div>
-    </div>
-    <div class="urlbar">purviews.com</div>
-    <button class="mode-btn" id="modeBtn" onclick="toggleDark()">◐ dark</button>
+<div class="wrap">
+ <div class="titlebar"><div class="dots"><i class="r"></i><i class="y"></i><i class="g"></i></div><div class="urlbar">purviews.com</div><button class="mode-btn js-mode" onclick="toggleDark()">◐ dark</button></div>
+ <header class="top">
+    <div class="top-right">
+   <button class="pill" onclick="openPanel('note')">Say hello</button>
+   <button class="pill js-mode" onclick="toggleDark()">◐ Dark</button>
   </div>
+ </header>
 
-  <!-- window body -->
-  <div class="win-body">
-    <h1 class="site-name">purviews</h1>
-    <p class="site-tagline">welcome to my little corner of the internet</p>
-
-    <div class="icon-grid">
-
-      <!-- about me — SVG portrait -->
-      <div class="icon-card" onclick="openPanel('about')" role="button" tabindex="0">
-        <div class="icon-wrap">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <circle cx="32" cy="32" r="30" fill="#e8ddd0" stroke="#c9bfb0" stroke-width="1"/>
-            <ellipse cx="32" cy="57" rx="20" ry="10" fill="#a87d6a"/>
-            <ellipse cx="32" cy="51" rx="10" ry="5" fill="#c49070"/>
-            <rect x="26" y="40" width="12" height="10" rx="4" fill="#d4a882"/>
-            <ellipse cx="32" cy="18" rx="13" ry="8" fill="#5c3d28"/>
-            <ellipse cx="20" cy="27" rx="5" ry="9" fill="#5c3d28"/>
-            <ellipse cx="44" cy="27" rx="5" ry="9" fill="#5c3d28"/>
-            <ellipse cx="28" cy="17" rx="4" ry="2" fill="#7a5535" opacity="0.5"/>
-            <circle cx="32" cy="28" r="13" fill="#d4a882"/>
-            <ellipse cx="27" cy="27" rx="2.5" ry="2.5" fill="#3a2510"/>
-            <ellipse cx="37" cy="27" rx="2.5" ry="2.5" fill="#3a2510"/>
-            <circle cx="28" cy="26" r="0.8" fill="#fff"/>
-            <circle cx="38" cy="26" r="0.8" fill="#fff"/>
-            <path d="M24 23.5 Q27 22 30 23.5" stroke="#4a2e14" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-            <path d="M34 23.5 Q37 22 40 23.5" stroke="#4a2e14" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-            <path d="M32 28 Q31 31 29.5 32 Q32 33 34.5 32 Q33 31 32 28" fill="#c4966a"/>
-            <path d="M28 35 Q32 38 36 35" stroke="#9a6040" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-            <ellipse cx="32" cy="36" rx="3.5" ry="1.5" fill="#c47060" opacity="0.7"/>
-            <path d="M52 10 L53 13 L56 14 L53 15 L52 18 L51 15 L48 14 L51 13 Z" fill="#c4a87a"/>
-            <path d="M10 14 L10.8 16.2 L13 17 L10.8 17.8 L10 20 L9.2 17.8 L7 17 L9.2 16.2 Z" fill="#c4a87a" opacity="0.7"/>
-            <circle cx="55" cy="24" r="1.2" fill="#c4a87a"/>
-            <circle cx="9" cy="26" r="0.9" fill="#c4a87a" opacity="0.6"/>
-          </svg>
-        </div>
-        <div class="card-label">about me</div>
-      </div>
-
-      <div class="icon-card" onclick="openPanel('journals')" role="button" tabindex="0">
-        <div class="icon-wrap">📔</div>
-        <div class="card-label">journals</div>
-      </div>
-
-      <div class="icon-card" onclick="openPanel('photos')" role="button" tabindex="0">
-        <div class="icon-wrap">📸</div>
-        <div class="card-label">photosets of<br>travels</div>
-      </div>
-
-      <div class="icon-card" onclick="openPanel('books')" role="button" tabindex="0">
-        <div class="icon-wrap">📚</div>
-        <div class="card-label">reads and<br>movies</div>
-      </div>
-
-      <div class="icon-card" onclick="openPanel('shop')" role="button" tabindex="0">
-        <div class="icon-wrap">
-          🛒
-          <div class="badge">!</div>
-        </div>
-        <div class="card-label">shop</div>
-      </div>
-
-      <div class="icon-card" onclick="openPanel('note')" role="button" tabindex="0">
-        <div class="icon-wrap">💬</div>
-        <div class="card-label">leave a word</div>
-      </div>
-
-      <div class="icon-card" onclick="openPanel('quotes')" role="button" tabindex="0">
-        <div class="icon-wrap">💡</div>
-        <div class="card-label">quotes that i<br>reach towards</div>
-      </div>
-
-      <div class="icon-card" onclick="openPanel('cool')" role="button" tabindex="0">
-        <div class="icon-wrap">🔭</div>
-        <div class="card-label">things i find<br>cool</div>
-      </div>
-
+ <main>
+  <section class="hero">
+   <div>
+    <div class="eyebrow">Purvi Watwani</div>
+    <h1>pur<em>views</em></h1>
+    <p class="tagline">welcome to my little corner of the internet</p>
+    <p class="lede">A little corner of the internet for journals, travels, favourite reads and whatever side quest I'm on this week.</p>
+    <div class="socials">
+     <a href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>Instagram</a>
+     <a href="https://in.linkedin.com/in/purvi-w-aa2788135" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>LinkedIn</a>
+     <a href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Substack</a>
+     <a href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>X</a>
     </div>
+   </div>
 
-    <!-- social bar -->
-    <div class="social-bar">
-      <a class="social-link" href="#" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-        Instagram
-      </a>
-      <a class="social-link" href="#" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
-        Twitter / X
-      </a>
-      <a class="social-link" href="#" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-        LinkedIn
-      </a>
-      <a class="social-link" href="#" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        Substack
-      </a>
-    </div>
-  </div>
+   <nav class="grid" aria-label="Sections">
+    <button class="tile" onclick="openPanel('about')"><span class="ic ic-me"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#e8ddd0" stroke="#c9bfb0" stroke-width="1"/><ellipse cx="32" cy="57" rx="20" ry="10" fill="#a87d6a"/><ellipse cx="32" cy="51" rx="10" ry="5" fill="#c49070"/><rect x="26" y="40" width="12" height="10" rx="4" fill="#d4a882"/><ellipse cx="32" cy="18" rx="13" ry="8" fill="#5c3d28"/><ellipse cx="20" cy="27" rx="5" ry="9" fill="#5c3d28"/><ellipse cx="44" cy="27" rx="5" ry="9" fill="#5c3d28"/><ellipse cx="28" cy="17" rx="4" ry="2" fill="#7a5535" opacity="0.5"/><circle cx="32" cy="28" r="13" fill="#d4a882"/><ellipse cx="27" cy="27" rx="2.5" ry="2.5" fill="#3a2510"/><ellipse cx="37" cy="27" rx="2.5" ry="2.5" fill="#3a2510"/><circle cx="28" cy="26" r="0.8" fill="#fff"/><circle cx="38" cy="26" r="0.8" fill="#fff"/><path d="M24 23.5 Q27 22 30 23.5" stroke="#4a2e14" stroke-width="1.2" stroke-linecap="round" fill="none"/><path d="M34 23.5 Q37 22 40 23.5" stroke="#4a2e14" stroke-width="1.2" stroke-linecap="round" fill="none"/><path d="M32 28 Q31 31 29.5 32 Q32 33 34.5 32 Q33 31 32 28" fill="#c4966a"/><path d="M28 35 Q32 38 36 35" stroke="#9a6040" stroke-width="1.2" stroke-linecap="round" fill="none"/><ellipse cx="32" cy="36" rx="3.5" ry="1.5" fill="#c47060" opacity="0.7"/><path d="M52 10 L53 13 L56 14 L53 15 L52 18 L51 15 L48 14 L51 13 Z" fill="#c4a87a"/><path d="M10 14 L10.8 16.2 L13 17 L10.8 17.8 L10 20 L9.2 17.8 L7 17 L9.2 16.2 Z" fill="#c4a87a" opacity="0.7"/><circle cx="55" cy="24" r="1.2" fill="#c4a87a"/><circle cx="9" cy="26" r="0.9" fill="#c4a87a" opacity="0.6"/></svg></span><span><b>About me</b><small>who's behind this</small></span></button>
+    <button class="tile" onclick="openPanel('journals')"><span class="ic">📔</span><span><b>Journals</b><small>weekly reflections</small></span></button>
+    <button class="tile" onclick="openPanel('photos')"><span class="ic">📸</span><span><b>Travels</b><small>photosets from the road</small></span></button>
+    <button class="tile" onclick="openPanel('books')"><span class="ic">📚</span><span><b>Reads &amp; movies</b><small>what I'm consuming</small></span></button>
+    <button class="tile" onclick="openPanel('shop')"><i class="dot"></i><span class="ic">🛒</span><span><b>Shop</b><small>things seeking new homes</small></span></button>
+    <button class="tile" onclick="openPanel('note')"><span class="ic">💬</span><span><b>Leave a word</b><small>I read every one</small></span></button>
+    <button class="tile" onclick="openPanel('quotes')"><span class="ic">💡</span><span><b>Quotes</b><small>words I reach towards</small></span></button>
+    <button class="tile" onclick="openPanel('cool')"><span class="ic">🔭</span><span><b>Things I find cool</b><small>a curated little list</small></span></button>
+   </nav>
+  </section>
+ </main>
+
+ <footer><span>© <span id="yr"></span> Purvi Watwani</span><span>made on a whim, still figuring it out</span></footer>
 </div>
 
-<!-- ── OVERLAY ── -->
-<div class="overlay" id="overlay" onclick="closeIfBg(event)" role="dialog" aria-modal="true">
-  <div class="panel-box" id="panelBox">
-    <button class="panel-close" onclick="closePanel()" aria-label="Close">✕</button>
-    <div id="panelContent"></div>
-  </div>
+<div class="overlay" id="overlay" onclick="if(event.target===this)closePanel()" role="dialog" aria-modal="true">
+ <aside class="drawer" id="drawer">
+  <button class="close" onclick="closePanel()" aria-label="Close">✕</button>
+  <div id="content"></div>
+ </aside>
 </div>
 
 <script>
-  /* ── dark mode ── */
-  let isDark = false;
-  function toggleDark() {
-    isDark = !isDark;
-    document.getElementById('root').className = isDark ? 'dark' : '';
-    document.getElementById('modeBtn').textContent = isDark ? '☀ light' : '◐ dark';
-  }
+const CONTACT_EMAIL = 'your-email@example.com'; // TODO: put your real email here
+document.getElementById('yr').textContent = new Date().getFullYear();
 
-  /* ── panel system ── */
-  function openPanel(id) {
-    document.getElementById('panelContent').innerHTML = panels[id] || '';
-    document.getElementById('overlay').classList.add('open');
-    document.getElementById('panelBox').scrollTop = 0;
-  }
-  function closePanel() {
-    document.getElementById('overlay').classList.remove('open');
-  }
-  function closeIfBg(e) {
-    if (e.target === document.getElementById('overlay')) closePanel();
-  }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+/* theme */
+const root = document.documentElement;
+function setTheme(d){root.classList.toggle('dark',d);document.querySelectorAll('.js-mode').forEach(b=>b.textContent=d?'☀ light':'◐ dark');try{localStorage.setItem('theme',d?'dark':'light')}catch(e){}}
+function toggleDark(){setTheme(!root.classList.contains('dark'))}
+(function(){let s=null;try{s=localStorage.getItem('theme')}catch(e){}
+ setTheme(s?s==='dark':matchMedia('(prefers-color-scheme: dark)').matches)})();
 
-  /* keyboard support for cards */
-  document.querySelectorAll('.icon-card').forEach(card => {
-    card.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
-    });
-  });
+/* drawer */
+const ov=document.getElementById('overlay'),dr=document.getElementById('drawer');
+const DATA={};
+['storygraph','letterboxd'].forEach(n=>fetch('data/'+n+'.json').then(r=>r.ok?r.json():null).then(d=>{DATA[n]=d}).catch(()=>{}));
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const stars=r=>'★'.repeat(Math.floor(r))+(r%1>=.5?'½':'');
+function booksHTML(){
+ const [head,filmsSample]=panels.books.split('<div class="label">Lately watched</div>');
+ let reading=head,films=filmsSample;
+ const sg=DATA.storygraph,lb=DATA.letterboxd;
+ if(sg&&sg.books&&sg.books.length)reading='<div class="p-title">Reads &amp; movies</div><div class="p-sub">what I\'m consuming</div><div class="label" style="margin-top:0">Currently reading</div>'+
+  sg.books.map(b=>'<div class="book">'+(b.cover?'<img class="cover" loading="lazy" alt="" src="'+esc(b.cover)+'">':'<div class="spine" style="background:#8a7a65"></div>')+'<div><div class="t">'+esc(b.title)+'</div><div class="a">'+esc(b.author||'')+'</div></div></div>').join('');
+ if(lb&&lb.films&&lb.films.length)films=lb.films.map(f=>'<div class="book">'+(f.poster?'<img class="cover" loading="lazy" alt="" src="'+esc(f.poster)+'">':'<div class="spine" style="background:#8a657a"></div>')+'<div><div class="t">'+esc(f.title)+'</div><div class="a">'+esc(f.year||'')+(f.watched?' · watched '+esc(f.watched):'')+'</div>'+(f.rating?'<div class="stars">'+stars(f.rating)+'</div>':'')+'</div></div>').join('');
+ return reading+'<div class="label">Lately watched</div>'+films+'<div class="links"><a href="https://app.thestorygraph.com/profile/purviews" target="_blank" rel="noopener">StoryGraph →</a><a href="https://letterboxd.com/purviews/" target="_blank" rel="noopener">Letterboxd →</a></div>';
+}
+function openPanel(id){document.getElementById('content').innerHTML=id==='books'?booksHTML():(panels[id]||'');dr.scrollTop=0;ov.classList.add('open');document.body.style.overflow='hidden'}
+function closePanel(){ov.classList.remove('open');document.body.style.overflow=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
+function sendNote(){
+ const v=id=>document.getElementById(id).value.trim();
+ const body=encodeURIComponent(v('nMsg')+'\n\n— '+(v('nName')||'a visitor')+(v('nMail')?' ('+v('nMail')+')':''));
+ location.href='mailto:'+CONTACT_EMAIL+'?subject='+encodeURIComponent('A word from purviews')+'&body='+body;
+}
 
-  /* ── panel content ── */
-  const panels = {
+const panels={
+about:`
+<div class="p-title">About me</div>
+<div class="p-sub">hi, i'm purvi</div>
+<p class="p-intro">When I'm asked to introduce myself in public, I usually say, “Hi, I'm Purvi, and I just exist.”</p>
+<p class="p-text">But here's what defines me, on a superficial level. I work as a business analyst to fund my little side quests, and the side quests are:</p>
+<div class="chips"><span class="chip">💃 pole dancing on weekends</span><span class="chip">🎨 painting</span><span class="chip">✈️ travelling</span><span class="chip">🏋️ strength training</span><span class="chip">🧗 climbing</span><span class="chip">🥾 hiking &amp; trekking</span><span class="chip">…and et cetera</span></div>
+<div class="label">Open to</div>
+<p class="p-text">collaborations, interesting work, and random side quests.</p>
+<p class="p-text"><a href="https://in.linkedin.com/in/purvi-w-aa2788135" target="_blank" rel="noopener" style="color:var(--accent)">Find me on LinkedIn →</a></p>`,
 
-    about: `
-      <div class="panel-title">About me</div>
-      <div class="panel-sub">this website was made on a whim, bear with me while i figure it out.</div>
-      <p class="panel-intro">When i get asked to introduce myself in public,i usually say "Hi, I'm Purvi and i just exist.</p>
-      <p style="font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:12px">
-        But here are some of the things that define me on a superficial level :-
-        I work as a business analyst to fund my little side quests.<br> 
-        The side quests in question are :<br>
-        Pole dancing on weekends, painting 🎨  so i can fill my room with it, traveling ✈️ whenever my body craves for fun little adventures, 
-        strength training to beat anyone who tries to hurt my inner child, climbing 🧗 whenever my knees allow it, hiking and trekking 
-        and et-cetra.
-      </p>
-      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--card-border)">
-        <div class="section-label">Open to</div>
-        <p style="font-size:13px;color:var(--muted);line-height:1.9">
-          collaborations, interesting work, and random side quests.
-        </p>
-      </div>
-    `,
+journals:`
+<div class="p-title">Journals</div><div class="p-sub">weekly reflections</div>
+<p class="p-intro">Small dispatches from wherever I am: thoughts, travels, moments worth keeping.</p>
+<div class="row"><div class="k">Week 12</div><div class="t">On mornings when the city is still half asleep</div><div class="d">Apr 28, 2025</div></div>
+<div class="row"><div class="k">Week 11</div><div class="t">Oaxaca had a quality of light I keep chasing</div><div class="d">Apr 21, 2025</div></div>
+<div class="row"><div class="k">Week 10</div><div class="t">Small rituals that hold everything together</div><div class="d">Apr 14, 2025</div></div>
+<div class="row"><div class="k">Week 09</div><div class="t">What it means to show up, even badly</div><div class="d">Apr 7, 2025</div></div>
+<div class="row"><div class="k">Week 08</div><div class="t">Lisbon in February felt like a secret</div><div class="d">Mar 31, 2025</div></div>
+<div class="row"><div class="k">Week 07</div><div class="t">On collecting things and letting them go</div><div class="d">Mar 24, 2025</div></div>`,
 
-    journals: `
-      <div class="panel-title">Journals</div>
-      <div class="panel-sub">weekly reflections</div>
-      <p class="panel-intro">Small dispatches from wherever I am — thoughts, travels, moments worth keeping.</p>
-      <div class="note-row"><div class="n-week">Week 12</div><div class="n-title">On mornings when the city is still half asleep</div><div class="n-date">Apr 28, 2025</div></div>
-      <div class="note-row"><div class="n-week">Week 11</div><div class="n-title">Oaxaca had a quality of light I keep chasing</div><div class="n-date">Apr 21, 2025</div></div>
-      <div class="note-row"><div class="n-week">Week 10</div><div class="n-title">Small rituals that hold everything together</div><div class="n-date">Apr 14, 2025</div></div>
-      <div class="note-row"><div class="n-week">Week 09</div><div class="n-title">What it means to show up, even badly</div><div class="n-date">Apr 7, 2025</div></div>
-      <div class="note-row"><div class="n-week">Week 08</div><div class="n-title">Lisbon in February felt like a secret</div><div class="n-date">Mar 31, 2025</div></div>
-      <div class="note-row"><div class="n-week">Week 07</div><div class="n-title">On collecting things and letting them go</div><div class="n-date">Mar 24, 2025</div></div>
-    `,
+photos:`
+<div class="p-title">Travels</div><div class="p-sub">places &amp; light</div>
+<p class="p-intro">Places I've been. Light I've chased. Moments I wanted to keep.</p>
+<div class="cards">
+<div class="card"><div class="thumb"><img src="images/srilanka.jpg" alt="Sri Lanka"></div><div class="in"><div class="n">Sri Lanka</div><div class="m">2026</div></div></div>
+<div class="card"><div class="thumb">🌊</div><div class="in"><div class="n">Lisbon, Portugal</div><div class="m">2025 · 18 photos</div></div></div>
+<div class="card"><div class="thumb">🌸</div><div class="in"><div class="n">Kyoto, Japan</div><div class="m">2024 · 31 photos</div></div></div>
+<div class="card"><div class="thumb">🏔</div><div class="in"><div class="n">Tbilisi, Georgia</div><div class="m">2024 · 20 photos</div></div></div>
+<div class="card"><div class="thumb">🥩</div><div class="in"><div class="n">Buenos Aires</div><div class="m">2023 · 15 photos</div></div></div>
+<div class="card"><div class="thumb">🕌</div><div class="in"><div class="n">Marrakech</div><div class="m">2024 · 22 photos</div></div></div>
+</div>`,
 
-    photos: `
-      <div class="panel-title">Photosets of travels</div>
-      <div class="panel-sub">places & light</div>
-      <p class="panel-intro">Places I've been. Light I've chased. Moments I wanted to keep.</p>
-      <div class="photo-grid">
-        <div class="photo-cell"><div class="photo-thumb"><img src="images/srilanka.jpg" alt="srilanka"></div><div class="photo-info"><div class="photo-name">Srilanka</div><div class="photo-meta">2026</div></div></div>
-        <div class="photo-cell"><div class="photo-thumb">🌊</div><div class="photo-info"><div class="photo-name">Lisbon, Portugal</div><div class="photo-meta">2025 · 18 photos</div></div></div>
-        <div class="photo-cell"><div class="photo-thumb">🌸</div><div class="photo-info"><div class="photo-name">Kyoto, Japan</div><div class="photo-meta">2024 · 31 photos</div></div></div>
-        <div class="photo-cell"><div class="photo-thumb">🏔</div><div class="photo-info"><div class="photo-name">Tbilisi, Georgia</div><div class="photo-meta">2024 · 20 photos</div></div></div>
-        <div class="photo-cell"><div class="photo-thumb">🥩</div><div class="photo-info"><div class="photo-name">Buenos Aires</div><div class="photo-meta">2023 · 15 photos</div></div></div>
-        <div class="photo-cell"><div class="photo-thumb">🕌</div><div class="photo-info"><div class="photo-name">Marrakech</div><div class="photo-meta">2024 · 22 photos</div></div></div>
-      </div>
-    `,
+books:`
+<div class="p-title">Reads &amp; movies</div><div class="p-sub">what I'm consuming</div>
+<div class="label" style="margin-top:0">Currently reading</div>
+<div class="book"><div class="spine" style="background:#8a7a65"></div><div><div class="t">The Dispossessed</div><div class="a">Ursula K. Le Guin · Fiction<br>A novel about anarchism, utopia, and what it means to be free.</div></div></div>
+<div class="book"><div class="spine" style="background:#6b7a65"></div><div><div class="t">A Field Guide to Getting Lost</div><div class="a">Rebecca Solnit · Essays</div></div></div>
+<div class="book"><div class="spine" style="background:#7a6575"></div><div><div class="t">The Year of Magical Thinking</div><div class="a">Joan Didion · Memoir</div></div></div>
+<div class="label">Lately watched</div>
+<div class="book"><div class="spine" style="background:#8a657a"></div><div><div class="t">Past Lives</div><div class="a">Celine Song · 2023</div><div class="stars">★★★★★</div></div></div>
+<div class="book"><div class="spine" style="background:#7a6a55"></div><div><div class="t">Aftersun</div><div class="a">Charlotte Wells · 2022</div><div class="stars">★★★★★</div></div></div>
+<div class="book"><div class="spine" style="background:#657a8a"></div><div><div class="t">All of Us Strangers</div><div class="a">Andrew Haigh · 2023</div><div class="stars">★★★★</div></div></div>
+<div class="book"><div class="spine" style="background:#8a7565"></div><div><div class="t">Before Sunrise</div><div class="a">Richard Linklater · 1995</div><div class="stars">★★★★★</div></div></div>`,
 
-    books: `
-      <div class="panel-title">Reads & Movies</div>
-      <div class="panel-sub">what I'm consuming</div>
-      <div class="section-label">Currently reading</div>
-      <div class="book-row"><div class="book-spine" style="background:#8a7a65"></div><div><div class="book-title">The Dispossessed</div><div class="book-auth">Ursula K. Le Guin · Fiction</div><div class="book-auth">A profound novel about anarchism, utopia, and what it means to be free.</div></div></div>
-      <div class="book-row"><div class="book-spine" style="background:#6b7a65"></div><div><div class="book-title">A Field Guide to Getting Lost</div><div class="book-auth">Rebecca Solnit · Essays</div></div></div>
-      <div class="book-row"><div class="book-spine" style="background:#7a6575"></div><div><div class="book-title">The Year of Magical Thinking</div><div class="book-auth">Joan Didion · Memoir</div></div></div>
-      <div class="section-label" style="margin-top:22px">Lately watched</div>
-      <div class="book-row"><div class="book-spine" style="background:#8a657a;border-radius:3px;width:38px;height:52px"></div><div><div class="book-title">Past Lives</div><div class="book-auth">Celine Song · 2023</div><div class="book-stars">★★★★★</div></div></div>
-      <div class="book-row"><div class="book-spine" style="background:#7a6a55;border-radius:3px;width:38px;height:52px"></div><div><div class="book-title">Aftersun</div><div class="book-auth">Charlotte Wells · 2022</div><div class="book-stars">★★★★★</div></div></div>
-      <div class="book-row"><div class="book-spine" style="background:#657a8a;border-radius:3px;width:38px;height:52px"></div><div><div class="book-title">All of Us Strangers</div><div class="book-auth">Andrew Haigh · 2023</div><div class="book-stars">★★★★</div></div></div>
-      <div class="book-row"><div class="book-spine" style="background:#8a7565;border-radius:3px;width:38px;height:52px"></div><div><div class="book-title">Before Sunrise</div><div class="book-auth">Richard Linklater · 1995</div><div class="book-stars">★★★★★</div></div></div>
-    `,
+shop:`
+<div class="p-title">Shop</div><div class="p-sub">things looking for a new home</div>
+<p class="p-intro">Objects I picked up on my travels, each with a story. Send me a note if something calls to you.</p>
+<div class="cards">
+<div class="card"><div class="thumb">🏺</div><div class="in"><div class="n">Oaxacan ceramic pot</div><div class="m">Mexico · 2024</div><button class="small-btn" onclick="openPanel('note')">inquire →</button></div></div>
+<div class="card"><div class="thumb">📖</div><div class="in"><div class="n">Vintage travel atlas</div><div class="m">Lisbon flea market</div><button class="small-btn" onclick="openPanel('note')">inquire →</button></div></div>
+<div class="card"><div class="thumb">🧵</div><div class="in"><div class="n">Hand-woven wool scarf</div><div class="m">Georgia · 2023</div><button class="small-btn" onclick="openPanel('note')">inquire →</button></div></div>
+<div class="card"><div class="thumb">🪞</div><div class="in"><div class="n">Antique hand mirror</div><div class="m">Buenos Aires</div><button class="small-btn" onclick="openPanel('note')">inquire →</button></div></div>
+<div class="card"><div class="thumb">🕯️</div><div class="in"><div class="n">Beeswax taper candles</div><div class="m">Tbilisi market</div><button class="small-btn" onclick="openPanel('note')">inquire →</button></div></div>
+<div class="card"><div class="thumb">🔶</div><div class="in"><div class="n">Brass incense holder</div><div class="m">Marrakech · 2024</div><button class="small-btn" onclick="openPanel('note')">inquire →</button></div></div>
+</div>`,
 
-    shop: `
-      <div class="panel-title">Shop</div>
-      <div class="panel-sub">things looking for a new home</div>
-      <p class="panel-intro">Objects I picked up on my travels — each with a story. Send me a note if something calls to you.</p>
-      <div class="shop-grid">
-        <div class="shop-card"><div class="shop-thumb">🏺</div><div class="shop-info"><div class="shop-name">Oaxacan ceramic pot</div><div class="shop-origin">Mexico · 2024</div><button class="shop-inquire" onclick="openPanel('note')">inquire →</button></div></div>
-        <div class="shop-card"><div class="shop-thumb">📚</div><div class="shop-info"><div class="shop-name">Vintage travel atlas</div><div class="shop-origin">Lisbon flea market</div><button class="shop-inquire" onclick="openPanel('note')">inquire →</button></div></div>
-        <div class="shop-card"><div class="shop-thumb">🧵</div><div class="shop-info"><div class="shop-name">Hand-woven wool scarf</div><div class="shop-origin">Georgia · 2023</div><button class="shop-inquire" onclick="openPanel('note')">inquire →</button></div></div>
-        <div class="shop-card"><div class="shop-thumb">🪞</div><div class="shop-info"><div class="shop-name">Antique hand mirror</div><div class="shop-origin">Buenos Aires</div><button class="shop-inquire" onclick="openPanel('note')">inquire →</button></div></div>
-        <div class="shop-card"><div class="shop-thumb">🕯️</div><div class="shop-info"><div class="shop-name">Beeswax taper candles</div><div class="shop-origin">Tbilisi market</div><button class="shop-inquire" onclick="openPanel('note')">inquire →</button></div></div>
-        <div class="shop-card"><div class="shop-thumb">🔶</div><div class="shop-info"><div class="shop-name">Brass incense holder</div><div class="shop-origin">Marrakech · 2024</div><button class="shop-inquire" onclick="openPanel('note')">inquire →</button></div></div>
-      </div>
-    `,
+note:`
+<div class="p-title">Leave a word</div><div class="p-sub">I read every one</div>
+<p class="p-intro">Whether it's about the shop, a climb, a run, a collab, or just a hello, I'm here.</p>
+<input class="field" id="nName" type="text" placeholder="Your name (optional)"/>
+<input class="field" id="nMail" type="email" placeholder="Your email (if you'd like a reply)"/>
+<textarea class="field" id="nMsg" placeholder="What's on your mind?"></textarea>
+<p class="p-text" style="font-size:12.5px">Open to: shopping inquiries · 7am modelling · Sunday climbing · running buddies · painting together · park reading dates · business analyst work · collaborations · anything in between.</p>
+<button class="btn" onclick="sendNote()">Send →</button>`,
 
-    note: `
-      <div class="panel-title">Leave a word</div>
-      <div class="panel-sub">I read every one</div>
-      <p class="panel-intro">Whether it's about the shop, a climb, a run, a collab, or just a hello — I'm here.</p>
-      <input class="form-field" type="text" placeholder="Your name (optional)" />
-      <input class="form-field" type="email" placeholder="Your email (if you'd like a reply)" />
-      <textarea class="form-field" placeholder="What's on your mind?"></textarea>
-      <p class="form-hint">Open to: shopping inquiries · 7am modeling · Sunday climbing · running buddies · painting together · park reading dates · business analyst work · collaborations · anything in between.</p>
-      <button class="form-submit">send →</button>
-    `,
+quotes:`
+<div class="p-title">Quotes I reach towards</div><div class="p-sub">words that stayed</div>
+<div class="quote"><p>“Not all those who wander are lost.”</p><span>— J.R.R. Tolkien</span></div>
+<div class="quote"><p>“The most courageous act is still to think for yourself. Aloud.”</p><span>— Coco Chanel</span></div>
+<div class="quote"><p>“I am not afraid of storms, for I am learning how to sail my ship.”</p><span>— Louisa May Alcott</span></div>
+<div class="quote"><p>“Keep some room in your heart for the unimaginable.”</p><span>— Mary Oliver</span></div>
+<div class="quote"><p>“She was not lost — she was becoming.”</p><span>— Ijeoma Umebinyuo</span></div>`,
 
-    quotes: `
-      <div class="panel-title">Quotes I reach towards</div>
-      <div class="panel-sub">words that stayed</div>
-      <div class="quote-block"><div class="quote-text">"Not all those who wander are lost."</div><div class="quote-by">— J.R.R. Tolkien</div></div>
-      <div class="quote-block"><div class="quote-text">"The most courageous act is still to think for yourself. Aloud."</div><div class="quote-by">— Coco Chanel</div></div>
-      <div class="quote-block"><div class="quote-text">"I am not afraid of storms, for I am learning how to sail my ship."</div><div class="quote-by">— Louisa May Alcott</div></div>
-      <div class="quote-block"><div class="quote-text">"Keep some room in your heart for the unimaginable."</div><div class="quote-by">— Mary Oliver</div></div>
-      <div class="quote-block"><div class="quote-text">"She was not lost — she was becoming."</div><div class="quote-by">— Ijeoma Umebinyuo</div></div>
-      <div class="quote-block"><div class="quote-text">"In the middle of difficulty lies opportunity."</div><div class="quote-by">— Albert Einstein</div></div>
-    `,
-
-    cool: `
-      <div class="panel-title">Things I find cool</div>
-      <div class="panel-sub">a curated little list</div>
-      <p class="panel-intro">Tools, ideas, places, and things I keep returning to.</p>
-      <div class="cool-grid">
-        <div class="cool-card"><div class="cool-title">🗺 Are.na</div><div class="cool-desc">A beautiful platform for collecting ideas and visual references.</div></div>
-        <div class="cool-card"><div class="cool-title">📡 Shortwave Radio</div><div class="cool-desc">Listening to distant stations late at night.</div></div>
-        <div class="cool-card"><div class="cool-title">🧪 Fermentation</div><div class="cool-desc">Making kombucha, kimchi, and watching things transform.</div></div>
-        <div class="cool-card"><div class="cool-title">🌍 Slow Travel</div><div class="cool-desc">One city, one month. Becoming a temporary local.</div></div>
-        <div class="cool-card"><div class="cool-title">📠 Letter Writing</div><div class="cool-desc">Actual handwritten letters to actual people.</div></div>
-        <div class="cool-card"><div class="cool-title">🔬 Citizen Science</div><div class="cool-desc">iNaturalist, star mapping, tide observation.</div></div>
-      </div>
-    `
-  };
+cool:`
+<div class="p-title">Things I find cool</div><div class="p-sub">a curated little list</div>
+<p class="p-intro">Tools, ideas, places, and things I keep returning to.</p>
+<div class="cards">
+<div class="card"><div class="in"><div class="n">🗺 Are.na</div><div class="m">A beautiful platform for collecting ideas and visual references.</div></div></div>
+<div class="card"><div class="in"><div class="n">📡 Shortwave radio</div><div class="m">Listening to distant stations late at night.</div></div></div>
+<div class="card"><div class="in"><div class="n">🧪 Fermentation</div><div class="m">Kombucha, kimchi, and watching things transform.</div></div></div>
+<div class="card"><div class="in"><div class="n">🌍 Slow travel</div><div class="m">One city, one month. Becoming a temporary local.</div></div></div>
+<div class="card"><div class="in"><div class="n">📠 Letter writing</div><div class="m">Actual handwritten letters to actual people.</div></div></div>
+<div class="card"><div class="in"><div class="n">🔬 Citizen science</div><div class="m">iNaturalist, star mapping, tide observation.</div></div></div>
+</div>`
+};
 </script>
 </body>
 </html>
