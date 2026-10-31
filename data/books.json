@@ -1,0 +1,45 @@
+{
+  "profile": "https://literal.club/purviews",
+  "books": [
+    {
+      "title": "The Rosie Project",
+      "author": "Graeme Simsion",
+      "cover": "https://assets.literal.club/4/ckmaukl7d72511ijaavn679o5.jpg"
+    },
+    {
+      "title": "1984",
+      "author": "George Orwell",
+      "cover": "https://assets.literal.club/4/ckr1q0sil005l01crzjywibt1.jpg"
+    },
+    {
+      "title": "Strangers",
+      "author": "Belle Burden",
+      "cover": "http://books.google.com/books/content?id=CehjEQAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    },
+    {
+      "title": "The lost art of keeping secrets",
+      "author": "Eva Rice",
+      "cover": "https://assets.literal.club/4/ckr1ulecu1d3r01cr4it7q6yi.jpg"
+    },
+    {
+      "title": "The Portrait of a Lady",
+      "author": "Henry James",
+      "cover": "https://assets.literal.club/2/ckx99wa2z248350jsjzk52nc6w.jpg"
+    },
+    {
+      "title": "All About Love",
+      "author": "bell hooks",
+      "cover": "https://assets.literal.club/2/ckp43cxr8217731gjsn4mrnbxm.jpg"
+    },
+    {
+      "title": "Heart Lamp",
+      "author": "Banu Mushtaq",
+      "cover": "https://assets.literal.club/production/covers/useruploads/cmca9x302002n0iyg0kbih0bg.jpeg"
+    },
+    {
+      "title": "Invisible Women",
+      "author": "Caroline Criado Perez",
+      "cover": "https://assets.literal.club/4/ckhq875le11630zg1i9axvlhv.jpg"
+    }
+  ]
+}
