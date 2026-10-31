@@ -26,6 +26,26 @@ def travel_albums():
     image_root = "images"
     extensions = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"}
     title_overrides = {"srilanka": "Sri Lanka", "buenosaires": "Buenos Aires"}
+
+    def browser_image(path):
+        ext = os.path.splitext(path)[1].lower()
+        try:
+            with open(path, "rb") as f:
+                header = f.read(16)
+        except OSError:
+            return False
+        if ext in {".jpg", ".jpeg"}:
+            return header.startswith(b"\xff\xd8\xff")
+        if ext == ".png":
+            return header.startswith(b"\x89PNG\r\n\x1a\n")
+        if ext == ".gif":
+            return header.startswith((b"GIF87a", b"GIF89a"))
+        if ext == ".webp":
+            return header[:4] == b"RIFF" and header[8:12] == b"WEBP"
+        if ext == ".avif":
+            return header[4:8] == b"ftyp" and b"avif" in header[8:16]
+        return False
+
     albums = []
     if os.path.isdir(image_root):
         for folder in sorted(os.listdir(image_root), key=str.lower):
@@ -35,7 +55,8 @@ def travel_albums():
             filenames = sorted(
                 (name for name in os.listdir(folder_path)
                  if os.path.isfile(os.path.join(folder_path, name))
-                 and os.path.splitext(name)[1].lower() in extensions),
+                 and os.path.splitext(name)[1].lower() in extensions
+                 and browser_image(os.path.join(folder_path, name))),
                 key=str.lower
             )
             if not filenames:
