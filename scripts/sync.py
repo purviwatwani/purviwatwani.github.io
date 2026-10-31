@@ -22,6 +22,33 @@ def save(path, obj):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(obj, f, ensure_ascii=False, indent=2)
 
+def travel_albums():
+    image_root = "images"
+    extensions = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"}
+    title_overrides = {"srilanka": "Sri Lanka", "buenosaires": "Buenos Aires"}
+    albums = []
+    if os.path.isdir(image_root):
+        for folder in sorted(os.listdir(image_root), key=str.lower):
+            folder_path = os.path.join(image_root, folder)
+            if not os.path.isdir(folder_path):
+                continue
+            filenames = sorted(
+                (name for name in os.listdir(folder_path)
+                 if os.path.isfile(os.path.join(folder_path, name))
+                 and os.path.splitext(name)[1].lower() in extensions),
+                key=str.lower
+            )
+            if not filenames:
+                continue
+            slug = re.sub(r"[^a-z0-9]+", "-", folder.lower()).strip("-")
+            title = title_overrides.get(folder.lower(), re.sub(r"[-_]", " ", folder).title())
+            albums.append({
+                "slug": slug,
+                "title": title,
+                "images": [f"{image_root}/{folder}/{name}" for name in filenames],
+            })
+    return {"albums": albums}
+
 def parse_letterboxd(xml_text):
     ns = {"lb": "https://letterboxd.com"}
     root = ET.fromstring(xml_text)
@@ -129,3 +156,10 @@ if __name__ == "__main__":
                 print(name, "returned nothing; keeping old file", file=sys.stderr)
         except Exception as e:
             print(name, "failed:", e, file=sys.stderr)
+    try:
+        os.makedirs("data", exist_ok=True)
+        albums = travel_albums()
+        save("data/travel.json", albums)
+        print("travel ok:", len(albums["albums"]))
+    except Exception as e:
+        print("travel failed:", e, file=sys.stderr)
