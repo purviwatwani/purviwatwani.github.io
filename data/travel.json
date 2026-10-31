@@ -1,0 +1,15 @@
+{
+  "albums": [
+    {
+      "slug": "vietnam",
+      "title": "Vietnam",
+      "images": [
+        "images/vietnam/IMG_3798.png",
+        "images/vietnam/IMG_388.png",
+        "images/vietnam/IMG_3992.png",
+        "images/vietnam/IMG_4036.png",
+        "images/vietnam/IMG_5083.png"
+      ]
+    }
+  ]
+}
