@@ -1,30 +1,3 @@
 {
-  "albums": [
-    {
-      "slug": "dharamkot",
-      "title": "Dharamkot",
-      "images": [
-        "images/dharamkot/IMG_0341.png"
-      ]
-    },
-    {
-      "slug": "shoja",
-      "title": "Shoja",
-      "images": [
-        "images/shoja/IMG_9072.jpeg",
-        "images/shoja/IMG_9120.jpeg"
-      ]
-    },
-    {
-      "slug": "vietnam",
-      "title": "Vietnam",
-      "images": [
-        "images/vietnam/IMG_3798.png",
-        "images/vietnam/IMG_388.png",
-        "images/vietnam/IMG_3992.png",
-        "images/vietnam/IMG_4036.png",
-        "images/vietnam/IMG_5083.png"
-      ]
-    }
-  ]
+  "albums": []
 }
