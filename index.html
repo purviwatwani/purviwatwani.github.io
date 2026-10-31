@@ -97,7 +97,7 @@ color:var(--muted);cursor:pointer;font-size:14px;transition:.2s}
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .card{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden;transition:border-color .2s,transform .2s}
 .card:hover{border-color:var(--accent);transform:translateY(-2px)}
-.travel-card{cursor:pointer}
+.travel-card{cursor:pointer;text-align:left;color:inherit;font:inherit;padding:0;width:100%}
 .gallery-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
 .gallery-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;background:var(--bg2)}
 .gallery-empty{padding:24px 0;color:var(--muted);font-size:14px}
@@ -259,7 +259,8 @@ function toggleDark(){setTheme(!root.classList.contains('dark'))}
 /* drawer */
 const ov=document.getElementById('overlay'),dr=document.getElementById('drawer');
 const DATA={};
-['books','letterboxd','articles'].forEach(n=>fetch('data/'+n+'.json').then(r=>r.ok?r.json():null).then(d=>{DATA[n]=d}).catch(()=>{}));
+let currentPanel='';
+['books','letterboxd','articles','travel'].forEach(n=>fetch('data/'+n+'.json').then(r=>r.ok?r.json():null).then(d=>{DATA[n]=d;if(n==='travel'&&currentPanel==='photos'){const c=document.getElementById('content');c.innerHTML=travelHTML();bindTravelCards(c)}}).catch(()=>{}));
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const stars=r=>'★'.repeat(Math.floor(r))+(r%1>=.5?'½':'');
 function booksHTML(){
@@ -280,23 +281,31 @@ function writingHTML(){
  const arts=a.posts.filter(p=>p.kind!=='weeknote'),wk=a.posts.filter(p=>p.kind==='weeknote');
  return '<div class="p-title">Writing</div><div class="p-sub">articles &amp; weeknotes</div><div class="tabs"><button class="tab on" id="btn-articles" onclick="showTab(\'articles\')">Articles</button><button class="tab" id="btn-weeknotes" onclick="showTab(\'weeknotes\')">Weeknotes</button></div><div id="tab-articles">'+postRows(arts,'Nothing here yet.')+'</div><div id="tab-weeknotes" style="display:none">'+postRows(wk,'Weeknotes will show up here soon.')+'</div><div class="links"><a href="'+esc(a.profile)+'" target="_blank" rel="noopener">Read on Substack →</a></div>';
 }
-function openPanel(id){document.getElementById('content').innerHTML=id==='books'?booksHTML():id==='journals'?writingHTML():(panels[id]||'');dr.scrollTop=0;ov.classList.add('open');document.body.style.overflow='hidden'}
-const travelAlbums={
- vietnam:{title:'Vietnam',images:['images/vietnam/IMG_3798.png','images/vietnam/IMG_388.png','images/vietnam/IMG_3992.png','images/vietnam/IMG_4036.png','images/vietnam/IMG_5083.png']},
- srilanka:{title:'Sri Lanka',images:['images/srilanka.jpg']},
- lisbon:{title:'Lisbon, Portugal',images:[]},
- kyoto:{title:'Kyoto, Japan',images:[]},
- tbilisi:{title:'Tbilisi, Georgia',images:[]},
- buenosaires:{title:'Buenos Aires',images:[]},
- marrakech:{title:'Marrakech',images:[]}
-};
+function openPanel(id){
+ currentPanel=id;
+ const content=document.getElementById('content');
+ content.innerHTML=id==='books'?booksHTML():id==='journals'?writingHTML():id==='photos'?travelHTML():(panels[id]||'');
+ if(id==='photos')bindTravelCards(content);
+ dr.scrollTop=0;ov.classList.add('open');document.body.style.overflow='hidden';
+}
+function travelHTML(){
+ const albums=(DATA.travel&&DATA.travel.albums)||[];
+ if(!DATA.travel)return '<div class="p-title">Travels</div><p class="gallery-empty">Loading travel photos…</p>';
+ if(!albums.length)return '<div class="p-title">Travels</div><p class="gallery-empty">No travel photos yet.</p>';
+ return '<div class="p-title">Travels</div><div class="p-sub">places &amp; light</div><p class="p-intro">Places I\'ve been. Light I\'ve chased. Moments I wanted to keep.</p><div class="cards">'+albums.map(a=>{
+  const cover=a.images&&a.images[0];
+  return '<button type="button" class="card travel-card" data-album="'+esc(a.slug)+'"><div class="thumb">'+(cover?'<img src="'+esc(cover)+'" alt="'+esc(a.title)+'" loading="lazy">':'📷')+'</div><div class="in"><div class="n">'+esc(a.title)+'</div><div class="m">'+a.images.length+' photos · open gallery</div></div></button>';
+ }).join('')+'</div>';
+}
+function bindTravelCards(root){root.querySelectorAll('[data-album]').forEach(b=>b.addEventListener('click',()=>openTravelAlbum(b.dataset.album)))}
 function openTravelAlbum(id){
- const album=travelAlbums[id];
+ const album=((DATA.travel&&DATA.travel.albums)||[]).find(a=>a.slug===id);
+ if(!album)return;
  const photos=album.images.length?'<div class="gallery-grid">'+album.images.map((src,i)=>'<img src="'+esc(src)+'" alt="'+esc(album.title)+' photo '+(i+1)+'" loading="lazy">').join('')+'</div>':'<p class="gallery-empty">Photos coming soon.</p>';
  document.getElementById('content').innerHTML='<button class="small-btn" onclick="openPanel(\'photos\')">← All travels</button><div class="p-title" style="margin-top:18px">'+esc(album.title)+'</div><div class="p-sub">photo gallery</div>'+photos;
  dr.scrollTop=0;ov.classList.add('open');document.body.style.overflow='hidden';
 }
-function closePanel(){ov.classList.remove('open');document.body.style.overflow=''}
+function closePanel(){currentPanel='';ov.classList.remove('open');document.body.style.overflow=''}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
 function sendNote(){
  const v=id=>document.getElementById(id).value.trim();
@@ -320,19 +329,6 @@ journals:`
 <p class="p-intro">Thoughts, letting them flow.</p>
 <p class="p-text">My articles and weeknotes live on Substack.</p>
 <div class="links"><a href="https://purview23.substack.com" target="_blank" rel="noopener">Read on Substack →</a></div>`,
-
-photos:`
-<div class="p-title">Travels</div><div class="p-sub">places &amp; light</div>
-<p class="p-intro">Places I've been. Light I've chased. Moments I wanted to keep.</p>
-<div class="cards">
-<div class="card travel-card" role="button" tabindex="0" onclick="openTravelAlbum('vietnam')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTravelAlbum('vietnam')}"><div class="thumb"><img src="images/vietnam/IMG_3798.png" alt="Vietnam"></div><div class="in"><div class="n">Vietnam</div><div class="m">5 photos · open gallery</div></div></div>
-<div class="card travel-card" role="button" tabindex="0" onclick="openTravelAlbum('srilanka')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTravelAlbum('srilanka')}"><div class="thumb"><img src="images/srilanka.jpg" alt="Sri Lanka"></div><div class="in"><div class="n">Sri Lanka</div><div class="m">2026 · open gallery</div></div></div>
-<div class="card travel-card" role="button" tabindex="0" onclick="openTravelAlbum('lisbon')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTravelAlbum('lisbon')}"><div class="thumb">🌊</div><div class="in"><div class="n">Lisbon, Portugal</div><div class="m">2025 · open gallery</div></div></div>
-<div class="card travel-card" role="button" tabindex="0" onclick="openTravelAlbum('kyoto')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTravelAlbum('kyoto')}"><div class="thumb">🌸</div><div class="in"><div class="n">Kyoto, Japan</div><div class="m">2024 · open gallery</div></div></div>
-<div class="card travel-card" role="button" tabindex="0" onclick="openTravelAlbum('tbilisi')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTravelAlbum('tbilisi')}"><div class="thumb">🏔</div><div class="in"><div class="n">Tbilisi, Georgia</div><div class="m">2024 · open gallery</div></div></div>
-<div class="card travel-card" role="button" tabindex="0" onclick="openTravelAlbum('buenosaires')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTravelAlbum('buenosaires')}"><div class="thumb">🥩</div><div class="in"><div class="n">Buenos Aires</div><div class="m">2023 · open gallery</div></div></div>
-<div class="card travel-card" role="button" tabindex="0" onclick="openTravelAlbum('marrakech')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTravelAlbum('marrakech')}"><div class="thumb">🕌</div><div class="in"><div class="n">Marrakech</div><div class="m">2024 · open gallery</div></div></div>
-</div>`,
 
 books:`
 <div class="p-title">Reads &amp; movies</div><div class="p-sub">what I'm consuming</div>
