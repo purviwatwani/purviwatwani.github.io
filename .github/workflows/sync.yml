@@ -4,6 +4,7 @@ on:
     paths:
       - "images/**"
       - "scripts/sync.py"
+      - "scripts/convert_images.py"
       - ".github/workflows/sync.yml"
   schedule:
     - cron: "0 */6 * * *"   # every 6 hours
