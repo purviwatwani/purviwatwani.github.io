@@ -1,5 +1,10 @@
-name: name: Sync Letterboxd, Literal, and Substack
+name: Sync Letterboxd, Literal, and Substack
 on:
+  push:
+    paths:
+      - "images/**"
+      - "scripts/sync.py"
+      - ".github/workflows/sync.yml"
   schedule:
     - cron: "0 */6 * * *"   # every 6 hours
   workflow_dispatch:         # lets you run it by hand
