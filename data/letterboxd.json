@@ -2,6 +2,13 @@
   "profile": "https://letterboxd.com/purviews/",
   "films": [
     {
+      "title": "Kung Fu Hustle",
+      "year": "2004",
+      "rating": 5.0,
+      "watched": "16 Nov 2026",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/4/7/1/2/8/47128-kung-fu-hustle-0-600-0-900-crop.jpg?v=501b38b95f"
+    },
+    {
       "title": "Letters to Juliet",
       "year": "2010",
       "rating": 4.0,
@@ -77,13 +84,6 @@
       "rating": 4.0,
       "watched": "25 Aug 2026",
       "poster": "https://a.ltrbxd.com/resized/film-poster/3/5/6/0/7/35607-my-name-is-khan-0-600-0-900-crop.jpg?v=1d2e413f39"
-    },
-    {
-      "title": "Obsession",
-      "year": "2025",
-      "rating": 5.0,
-      "watched": "8 Jul 2026",
-      "poster": "https://a.ltrbxd.com/resized/film-poster/1/2/3/4/4/7/2/1234472-obsession-2025-2-0-600-0-900-crop.jpg?v=cff6fc00b6"
     }
   ]
 }
