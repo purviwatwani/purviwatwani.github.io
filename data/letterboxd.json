@@ -2,6 +2,27 @@
   "profile": "https://letterboxd.com/purviews/",
   "films": [
     {
+      "title": "Verity",
+      "year": "2026",
+      "rating": 2.5,
+      "watched": "25 Nov 2026",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/6/7/1/5/1/1167151-verity-2026-0-600-0-900-crop.jpg?v=3169444893"
+    },
+    {
+      "title": "Inside Out",
+      "year": "2015",
+      "rating": 4.0,
+      "watched": "25 Nov 2026",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/3/2/8/4/113284-inside-out-0-600-0-900-crop.jpg?v=de03b9b6ef"
+    },
+    {
+      "title": "The Girl with the Dragon Tattoo",
+      "year": "2011",
+      "rating": 5.0,
+      "watched": "25 Nov 2026",
+      "poster": "https://a.ltrbxd.com/resized/sm/upload/0a/ec/72/pb/zHGxi75Ugw69jtCmOK8TvwU588z-0-600-0-900-crop.jpg?v=58931ddc0d"
+    },
+    {
       "title": "Kung Fu Hustle",
       "year": "2004",
       "rating": 5.0,
@@ -63,27 +84,6 @@
       "rating": 3.0,
       "watched": "27 Jul 2026",
       "poster": "https://a.ltrbxd.com/resized/film-poster/1/2/0/5/4/9/4/1205494-the-drama-0-600-0-900-crop.jpg?v=2320acafd5"
-    },
-    {
-      "title": "Pulp Fiction",
-      "year": "1994",
-      "rating": 4.0,
-      "watched": "27 Aug 2026",
-      "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/4/4/4/51444-pulp-fiction-0-600-0-900-crop.jpg?v=dee19a8077"
-    },
-    {
-      "title": "Three Billboards Outside Ebbing, Missouri",
-      "year": "2017",
-      "rating": 5.0,
-      "watched": "15 Aug 2026",
-      "poster": "https://a.ltrbxd.com/resized/film-poster/2/9/1/6/1/0/291610-three-billboards-outside-ebbing-missouri-0-600-0-900-crop.jpg?v=26123017e3"
-    },
-    {
-      "title": "My Name Is Khan",
-      "year": "2010",
-      "rating": 4.0,
-      "watched": "25 Aug 2026",
-      "poster": "https://a.ltrbxd.com/resized/film-poster/3/5/6/0/7/35607-my-name-is-khan-0-600-0-900-crop.jpg?v=1d2e413f39"
     }
   ]
 }
